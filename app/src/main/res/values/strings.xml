@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestingMyMovies</string>
+    <string name="menu_option_main">Main</string>
+    <string name="menu_option_favourite">Favourite</string>
+    <string name="switch_popularity">Most popular</string>
+    <string name="switch_top_rated">Top rated</string>
+</resources>
