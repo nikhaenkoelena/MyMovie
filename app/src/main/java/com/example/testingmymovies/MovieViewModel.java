@@ -2,8 +2,6 @@ package com.example.testingmymovies;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -55,7 +53,7 @@ public class MovieViewModel extends AndroidViewModel {
         @Override
         protected Void doInBackground(List<Movie>... lists) {
             if (lists != null && lists.length>0)
-            database.movieDao().insertMovies(lists[0]);
+                database.movieDao().insertMovies(lists[0]);
             return null;
         }
     }

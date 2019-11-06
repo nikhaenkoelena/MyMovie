@@ -3,10 +3,9 @@ package com.example.testingmymovies.screens;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -24,19 +23,11 @@ import android.widget.Toast;
 import com.example.testingmymovies.MovieViewModel;
 import com.example.testingmymovies.R;
 import com.example.testingmymovies.adapters.MovieAdapter;
-import com.example.testingmymovies.api.ApiFactory;
-import com.example.testingmymovies.api.ApiServise;
 import com.example.testingmymovies.pojo.Movie;
-import com.example.testingmymovies.pojo.MovieResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -90,18 +81,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MovieAdapter();
         recyclerView.setAdapter(adapter);
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        movies = viewModel.getMovies();
-        movies.observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(List<Movie> movies) {
-                if (movies != null && !movies.isEmpty()) {
-                    for (Movie movie: movies) {
-                        Log.i("NameOfMovie", movie.getPoster_path_small());
-                        adapter.setMovies(movies);
-                    }
-                }
-            }
-        });
         adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
@@ -119,7 +98,19 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnReachEndListener(new MovieAdapter.OnReachEndListener() {
             @Override
             public void onReachEnd() {
+                page++;
                 viewModel.loadData(methodOfSort, page);
+                Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
+                Log.i("страница", Integer.toString(page));
+            }
+        });
+        movies = viewModel.getMovies();
+        movies.observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                if (movies != null && !movies.isEmpty()) {
+                    adapter.setMovies(movies);
+                }
             }
         });
         viewModel.loadData(methodOfSort, page);
