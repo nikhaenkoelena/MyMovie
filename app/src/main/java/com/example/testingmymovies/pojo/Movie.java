@@ -1,6 +1,9 @@
 package com.example.testingmymovies.pojo;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
@@ -8,7 +11,10 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "moviestable")
 public class Movie {
-    @PrimaryKey
+    @PrimaryKey (autoGenerate = true)
+    @SerializedName("uniqId")
+    @Expose
+    private int uniqId;
     @SerializedName("id")
     @Expose
     private int id;
@@ -40,6 +46,20 @@ public class Movie {
     @Expose
     private String release_date;
 
+    public Movie(int uniqId, int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String backdrop_path, String overview, String release_date) {
+        this.uniqId = uniqId;
+        this.id = id;
+        this.vote_count = vote_count;
+        this.vote_average = vote_average;
+        this.title = title;
+        this.original_title = original_title;
+        this.poster_path_small = poster_path_small;
+        this.backdrop_path = backdrop_path;
+        this.overview = overview;
+        this.release_date = release_date;
+    }
+
+    @Ignore
     public Movie(int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String backdrop_path, String overview, String release_date) {
         this.id = id;
         this.vote_count = vote_count;
@@ -50,6 +70,14 @@ public class Movie {
         this.backdrop_path = backdrop_path;
         this.overview = overview;
         this.release_date = release_date;
+    }
+
+    public int getUniqId() {
+        return uniqId;
+    }
+
+    public void setUniqId(int uniqId) {
+        this.uniqId = uniqId;
     }
 
     public int getId() {
@@ -131,4 +159,5 @@ public class Movie {
     public void setPoster_path_big(String poster_path_big) {
         this.poster_path_big = poster_path_big;
     }
+
 }
