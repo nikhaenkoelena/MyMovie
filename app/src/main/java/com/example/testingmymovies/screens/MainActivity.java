@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnReachEndListener(new MovieAdapter.OnReachEndListener() {
             @Override
             public void onReachEnd() {
-                page++;
                 viewModel.loadData(methodOfSort, page);
                 Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
                 Log.i("страница", Integer.toString(page));
@@ -110,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<Movie> movies) {
                 if (movies != null && !movies.isEmpty()) {
                     adapter.setMovies(movies);
+                    page++;
                 }
             }
         });
