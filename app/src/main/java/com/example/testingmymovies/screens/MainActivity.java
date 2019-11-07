@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private static int methodOfSort;
     private int page;
 
+    private static boolean isLoading;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         switchSortBy.setChecked(false);
         methodOfSort = 0;
         page = 1;
+        isLoading = false;
         popularity = findViewById(R.id.textViewPopularity);
         topRated = findViewById(R.id.textViewVoted);
         popularity.setTextColor(getResources().getColor(R.color.colorAccent));
@@ -84,8 +87,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
+                Movie movie = adapter.getMovies().get(position);
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                intent.putExtra("id", position);
+                intent.putExtra("id", movie.getId());
                 startActivity(intent);
             }
         });
@@ -98,9 +102,12 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnReachEndListener(new MovieAdapter.OnReachEndListener() {
             @Override
             public void onReachEnd() {
-                viewModel.loadData(methodOfSort, page);
-                Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
-                Log.i("страница", Integer.toString(page));
+                if (!isLoading) {
+                    viewModel.loadData(methodOfSort, page);
+                    Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
+                    Log.i("страницаX", Integer.toString(page));
+                    isLoading = true;
+                }
             }
         });
         movies = viewModel.getMovies();
@@ -109,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<Movie> movies) {
                 if (movies != null && !movies.isEmpty()) {
                     adapter.setMovies(movies);
-                    page++;
+                    isLoading =false;
                 }
             }
         });
