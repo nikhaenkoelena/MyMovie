@@ -46,13 +46,14 @@ public class Movie {
     @Expose
     private String release_date;
 
-    public Movie(int uniqId, int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String backdrop_path, String overview, String release_date) {
+    public Movie(int uniqId, int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String poster_path_big, String backdrop_path, String overview, String release_date) {
         this.uniqId = uniqId;
         this.id = id;
         this.vote_count = vote_count;
         this.vote_average = vote_average;
         this.title = title;
         this.original_title = original_title;
+        this.poster_path_big = poster_path_big;
         this.poster_path_small = poster_path_small;
         this.backdrop_path = backdrop_path;
         this.overview = overview;
@@ -60,12 +61,13 @@ public class Movie {
     }
 
     @Ignore
-    public Movie(int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String backdrop_path, String overview, String release_date) {
+    public Movie(int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String poster_path_big, String backdrop_path, String overview, String release_date) {
         this.id = id;
         this.vote_count = vote_count;
         this.vote_average = vote_average;
         this.title = title;
         this.original_title = original_title;
+        this.poster_path_big = poster_path_big;
         this.poster_path_small = poster_path_small;
         this.backdrop_path = backdrop_path;
         this.overview = overview;

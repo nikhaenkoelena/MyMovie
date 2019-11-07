@@ -2,13 +2,17 @@ package com.example.testingmymovies.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 
 import java.util.List;
+
+import retrofit2.http.DELETE;
 
 @Dao
 public interface MovieDao {
@@ -22,4 +26,18 @@ public interface MovieDao {
     @Query("DELETE FROM moviestable")
     void deleteAllMovies ();
 
+    @Insert
+    void insertFavouriteMovie (FavouriteMovie movie);
+
+    @Query("SELECT * FROM favourite_moviestable")
+    LiveData<List<FavouriteMovie>> getAllFavouriteMovies ();
+
+    @Query("SELECT * FROM moviestable WHERE id == :movieId")
+    Movie getMovieById (int movieId);
+
+    @Query("SELECT * FROM favourite_moviestable WHERE id == :favMovieId")
+    FavouriteMovie getFavouriteMovieById (int favMovieId);
+
+    @Delete
+    void deleteFavouriteMovie (FavouriteMovie favouriteMovie);
 }
