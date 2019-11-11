@@ -38,6 +38,7 @@ public class MovieViewModel extends AndroidViewModel {
 
     private static final String SORT_BY_POPULARITY = "popularity.desc";
     private static final String SORT_BY_TOP_RATED = "vote_average.desc";
+    private static final int MIN_VOTE_COUNT_VALUE = 1000;
 
     public MovieViewModel(@NonNull Application application) {
         super(application);
@@ -149,7 +150,7 @@ public class MovieViewModel extends AndroidViewModel {
         }
     }
 
-    public void loadData (int methodOfSort, int page) {
+    public void loadData (String language, int methodOfSort, int page) {
         String sortBy = null;
         if (methodOfSort == 1) {
             sortBy = SORT_BY_TOP_RATED;
@@ -157,9 +158,10 @@ public class MovieViewModel extends AndroidViewModel {
             sortBy = SORT_BY_POPULARITY;
         }
         final int pageNumber = page;
+        String lang = language;
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiServise apiServise = apiFactory.getApiServise();
-        Disposable disposable = apiServise.getMovies("ru-RU", sortBy, 1000, pageNumber)
+        Disposable disposable = apiServise.getMovies(lang, sortBy, MIN_VOTE_COUNT_VALUE, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<MovieResult>() {
