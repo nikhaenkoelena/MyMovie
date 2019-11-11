@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 if (movies != null && !movies.isEmpty()) {
                     adapter.setMovies(movies);
                     isLoading =false;
+                    page++;
                 }
             }
         });
