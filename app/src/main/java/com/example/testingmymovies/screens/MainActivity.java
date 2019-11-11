@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import com.example.testingmymovies.adapters.MovieAdapter;
 import com.example.testingmymovies.pojo.Movie;
 
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -39,8 +41,11 @@ public class MainActivity extends AppCompatActivity {
     private Switch switchSortBy;
     private TextView popularity;
     private TextView topRated;
+    private ProgressBar progressBar;
+
     private static int methodOfSort;
     private int page;
+    private static String lang;
 
     private static boolean isLoading;
 
@@ -77,8 +82,10 @@ public class MainActivity extends AppCompatActivity {
         methodOfSort = 0;
         page = 1;
         isLoading = false;
+        lang = Locale.getDefault().getLanguage();
         popularity = findViewById(R.id.textViewPopularity);
         topRated = findViewById(R.id.textViewVoted);
+        progressBar = findViewById(R.id.progressBar);
         popularity.setTextColor(getResources().getColor(R.color.colorAccent));
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new MovieAdapter();
@@ -96,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         switchSortBy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                page = 1;
                 setMethodOfSort(isChecked);
             }
         });
@@ -103,9 +111,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReachEnd() {
                 if (!isLoading) {
-                    viewModel.loadData(methodOfSort, page);
-                    Toast.makeText(MainActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
-                    Log.i("страницаX", Integer.toString(page));
+                    viewModel.loadData(lang, methodOfSort, page);
+                    progressBar.setVisibility(View.VISIBLE);
                     isLoading = true;
                 }
             }
@@ -117,36 +124,35 @@ public class MainActivity extends AppCompatActivity {
                 if (movies != null && !movies.isEmpty()) {
                     adapter.setMovies(movies);
                     isLoading =false;
+                    progressBar.setVisibility(View.INVISIBLE);
                     page++;
                 }
             }
         });
-        viewModel.loadData(methodOfSort, page);
+        viewModel.loadData(lang, methodOfSort, page);
     }
 
     public void onClickTopRated(View view) {
         setMethodOfSort(true);
-        methodOfSort = 1;
-        viewModel.loadData(methodOfSort, page);
+        switchSortBy.setChecked(true);
     }
 
     public void onClickPopularity(View view) {
         setMethodOfSort(false);
-        methodOfSort = 0;
-        viewModel.loadData(methodOfSort, page);
+        switchSortBy.setChecked(false);
     }
 
     private void setMethodOfSort (boolean isTopRated) {
         if (isTopRated) {
-            switchSortBy.setChecked(true);
             popularity.setTextColor(getResources().getColor(R.color.white_color));
             topRated.setTextColor(getResources().getColor(R.color.colorAccent));
+            methodOfSort = 1;
         } else {
-            switchSortBy.setChecked(false);
             popularity.setTextColor(getResources().getColor(R.color.colorAccent));
             topRated.setTextColor(getResources().getColor(R.color.white_color));
+            methodOfSort = 0;
         }
-
+        viewModel.loadData(lang, methodOfSort, page);
     }
 
 }

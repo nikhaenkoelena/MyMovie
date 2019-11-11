@@ -4,4 +4,14 @@
     <string name="menu_option_favourite">Favourite</string>
     <string name="switch_popularity">Most popular</string>
     <string name="switch_top_rated">Top rated</string>
+    <string name="added_to_favourite">Добавлено в избранное</string>
+    <string name="removed_from_favourite">Удалено из избранного</string>
+    <string name="loading_error">Ошибка загрузки</string>
+    <string name="label_title">Название:</string>
+    <string name="label_origin_title">Оригинальное название:</string>
+    <string name="label_release_date">Дата выхода:</string>
+    <string name="label_overview">Описание:</string>
+    <string name="description_button_add_to_favourite">Кнопка добавить в избранное</string>
+    <string name="description_poster">Постер фильма</string>
+    <string name="description_poster_item">Постер фильма в списке</string>
 </resources>
