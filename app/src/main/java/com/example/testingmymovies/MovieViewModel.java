@@ -44,6 +44,7 @@ public class MovieViewModel extends AndroidViewModel {
         database = MovieDatabase.getInstance(getApplication());
         movies = database.movieDao().getAllMovies();
         favouriteMovies = database.movieDao().getAllFavouriteMovies();
+        compositeDisposable = new CompositeDisposable();
     }
 
     public LiveData<List<Movie>> getMovies () {
@@ -155,10 +156,10 @@ public class MovieViewModel extends AndroidViewModel {
         } else {
             sortBy = SORT_BY_POPULARITY;
         }
+        final int pageNumber = page;
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiServise apiServise = apiFactory.getApiServise();
-        compositeDisposable = new CompositeDisposable();
-        Disposable disposable = apiServise.getMovies("ru-RU", sortBy, 1000, page)
+        Disposable disposable = apiServise.getMovies("ru-RU", sortBy, 1000, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<MovieResult>() {
@@ -171,7 +172,9 @@ public class MovieViewModel extends AndroidViewModel {
                             movie.setPoster_path_small(BASE_POSTER_URL + SMALL_POSTER_SIZE + movie.getPoster_path_small());
                             moviesForDb.add(movie);
                         }
-                        deleteAllMovies();
+                        if (pageNumber == 1) {
+                            deleteAllMovies();
+                        }
                         insertMovies(moviesForDb);
                     }
                 }, new Consumer<Throwable>() {
