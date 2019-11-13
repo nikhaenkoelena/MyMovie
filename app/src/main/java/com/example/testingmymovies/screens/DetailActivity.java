@@ -1,7 +1,11 @@
 package com.example.testingmymovies.screens;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +20,15 @@ import android.widget.Toast;
 
 import com.example.testingmymovies.MovieViewModel;
 import com.example.testingmymovies.R;
+import com.example.testingmymovies.adapters.TrailersAdapter;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
+import com.example.testingmymovies.pojo.Trailer;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -32,6 +42,12 @@ public class DetailActivity extends AppCompatActivity {
     private int id;
     private Movie movie;
     private FavouriteMovie favouriteMovie;
+    private String lang;
+
+    private RecyclerView recyclerViewTrailers;
+    private TrailersAdapter trailersAdapter;
+
+    private LiveData<List<Trailer>> trailers;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,6 +83,7 @@ public class DetailActivity extends AppCompatActivity {
         textViewReleaseDate = findViewById(R.id.textViewReleaseDate);
         textViewOverview = findViewById(R.id.textViewOverView);
         imageViewAddToFavourite = findViewById(R.id.imageViewAddToFavourite);
+        lang = Locale.getDefault().getLanguage();
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("id")) {
@@ -83,6 +100,21 @@ public class DetailActivity extends AppCompatActivity {
             startActivity(intent1);
         }
         setFavourite();
+        recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
+        trailersAdapter =  new TrailersAdapter();
+        recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTrailers.setAdapter(trailersAdapter);
+        trailers = viewModel.getTrailers();
+        trailers.observe(this, new Observer<List<Trailer>>() {
+            @Override
+            public void onChanged(List<Trailer> trailers) {
+                trailersAdapter.setTrailers(trailers);
+                for (Trailer trailer:trailers) {
+                    Log.i("проверка", trailer.getName());
+                }
+            }
+        });
+        viewModel.loadTrailers(id, lang);
     }
 
     public void onClickAddToFavourite(View view) {

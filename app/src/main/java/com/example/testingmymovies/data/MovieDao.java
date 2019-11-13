@@ -9,6 +9,7 @@ import androidx.room.Query;
 
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
+import com.example.testingmymovies.pojo.Trailer;
 
 import java.util.List;
 
@@ -40,4 +41,14 @@ public interface MovieDao {
 
     @Delete
     void deleteFavouriteMovie (FavouriteMovie favouriteMovie);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertTrailers (List<Trailer> trailers);
+
+    @Query("DELETE FROM trailerstable")
+    void deleteAllTrailers ();
+
+    @Query("SELECT * FROM trailerstable")
+    LiveData<List<Trailer>> getTrailers ();
+
 }

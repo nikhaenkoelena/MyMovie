@@ -9,13 +9,23 @@ public class ApiFactory {
 
     private static ApiFactory apiFactory;
     private static Retrofit retrofit;
+    private static Retrofit retrofitVideos;
+    private static Retrofit retrofitReviews;
     private static final String BASE_URL = "https://api.themoviedb.org/3/discover/";
+    private static final String BASE_URL_VIDEOS = "https://api.themoviedb.org/3/movie/";
+//    private static final String BASE_URL_REVIEWS = "https://api.themoviedb.org/3/movie/%s/reviews";
 
     private ApiFactory() {
         retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(BASE_URL)
+                .build();
+
+        retrofitVideos = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .baseUrl(BASE_URL_VIDEOS)
                 .build();
     }
 
@@ -27,5 +37,7 @@ public class ApiFactory {
     }
 
     public ApiServise getApiServise () { return retrofit.create(ApiServise.class); }
+
+    public ApiServiseVideo getApiServiseVideo () { return retrofitVideos.create(ApiServiseVideo.class); }
 
 }

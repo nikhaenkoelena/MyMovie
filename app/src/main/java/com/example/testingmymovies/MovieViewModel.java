@@ -2,6 +2,7 @@ package com.example.testingmymovies;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,10 +10,13 @@ import androidx.lifecycle.LiveData;
 
 import com.example.testingmymovies.api.ApiFactory;
 import com.example.testingmymovies.api.ApiServise;
+import com.example.testingmymovies.api.ApiServiseVideo;
 import com.example.testingmymovies.data.MovieDatabase;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.pojo.MovieResult;
+import com.example.testingmymovies.pojo.Trailer;
+import com.example.testingmymovies.pojo.TrailersResult;
 import com.example.testingmymovies.screens.MainActivity;
 
 import java.util.ArrayList;
@@ -29,10 +33,13 @@ public class MovieViewModel extends AndroidViewModel {
 
     private static MovieDatabase database;
     private CompositeDisposable compositeDisposable;
+    private CompositeDisposable compositeDisposableTrailers;
     public LiveData<List<Movie>> movies;
     public LiveData<List<FavouriteMovie>> favouriteMovies;
+    public LiveData<List<Trailer>> trailers;
 
     public static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
+    private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
     public static final String SMALL_POSTER_SIZE = "w185";
     public static final String BIG_POSTER_SIZE = "w780";
 
@@ -46,6 +53,8 @@ public class MovieViewModel extends AndroidViewModel {
         movies = database.movieDao().getAllMovies();
         favouriteMovies = database.movieDao().getAllFavouriteMovies();
         compositeDisposable = new CompositeDisposable();
+        compositeDisposableTrailers = new CompositeDisposable();
+        trailers = database.movieDao().getTrailers();
     }
 
     public LiveData<List<Movie>> getMovies () {
@@ -53,6 +62,8 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<FavouriteMovie>> getFavouriteMovies () {return favouriteMovies; }
+
+    public LiveData<List<Trailer>> getTrailers () {return trailers; }
 
     public void insertMovies (List<Movie> movies) {
         new InsertMovieTask().execute(movies);
@@ -150,7 +161,33 @@ public class MovieViewModel extends AndroidViewModel {
         }
     }
 
-    public void loadData (String language, int methodOfSort, int page) {
+    public void insertTrailers (List<Trailer> trailers) {
+        new InsertTrailersTask().execute(trailers);
+    }
+
+    public static class InsertTrailersTask extends AsyncTask<List<Trailer>, Void, Void> {
+        @Override
+        protected Void doInBackground(List<Trailer>... lists) {
+            if(lists != null && lists.length >0) {
+                database.movieDao().insertTrailers(lists[0]);
+            }
+            return null;
+        }
+    }
+
+    public void deleteAllTrailers () {
+        new DeleteAllTrailersTask().execute();
+    }
+
+    public static class DeleteAllTrailersTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            database.movieDao().deleteAllTrailers();
+            return null;
+        }
+    }
+
+    public void loadData (String lang, int methodOfSort, int page) {
         String sortBy = null;
         if (methodOfSort == 1) {
             sortBy = SORT_BY_TOP_RATED;
@@ -158,7 +195,6 @@ public class MovieViewModel extends AndroidViewModel {
             sortBy = SORT_BY_POPULARITY;
         }
         final int pageNumber = page;
-        String lang = language;
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiServise apiServise = apiFactory.getApiServise();
         Disposable disposable = apiServise.getMovies(lang, sortBy, MIN_VOTE_COUNT_VALUE, pageNumber)
@@ -186,6 +222,35 @@ public class MovieViewModel extends AndroidViewModel {
                     }
                 });
         compositeDisposable.add(disposable);
+    }
+
+    public void loadTrailers (int id, String lang) {
+        ApiFactory apiFactory = ApiFactory.getInstance();
+        ApiServiseVideo apiServiseVideo = apiFactory.getApiServiseVideo();
+        Disposable disposable = apiServiseVideo.getTrailers(id, lang)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<TrailersResult>() {
+                    @Override
+                    public void accept(TrailersResult trailersResult) throws Exception {
+                        List<Trailer> trailers = new ArrayList<>();
+                        List<Trailer> trailersFromJSON = trailersResult.getTrailers();
+                        for (Trailer trailer : trailersFromJSON) {
+                            trailer.setKey(BASE_YOUTUBE_URL + trailer.getKey());
+                            Log.i("трейлер", trailer.getKey());
+                            trailers.add(trailer);
+                        }
+                        deleteAllTrailers();
+                        insertTrailers(trailers);
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        compositeDisposableTrailers.add(disposable);
     }
 
     @Override
