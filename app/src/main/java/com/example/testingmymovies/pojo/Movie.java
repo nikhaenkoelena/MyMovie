@@ -5,9 +5,13 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.example.testingmymovies.converters.Converter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 @Entity(tableName = "moviestable")
 public class Movie {
@@ -46,6 +50,7 @@ public class Movie {
     @Expose
     private String release_date;
 
+
     public Movie(int uniqId, int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String poster_path_big, String backdrop_path, String overview, String release_date) {
         this.uniqId = uniqId;
         this.id = id;
@@ -73,6 +78,7 @@ public class Movie {
         this.overview = overview;
         this.release_date = release_date;
     }
+
 
     public int getUniqId() {
         return uniqId;
