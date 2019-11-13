@@ -10,11 +10,14 @@ import androidx.lifecycle.LiveData;
 
 import com.example.testingmymovies.api.ApiFactory;
 import com.example.testingmymovies.api.ApiServise;
+import com.example.testingmymovies.api.ApiServiseReviews;
 import com.example.testingmymovies.api.ApiServiseVideo;
 import com.example.testingmymovies.data.MovieDatabase;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.pojo.MovieResult;
+import com.example.testingmymovies.pojo.Review;
+import com.example.testingmymovies.pojo.ReviewsResult;
 import com.example.testingmymovies.pojo.Trailer;
 import com.example.testingmymovies.pojo.TrailersResult;
 import com.example.testingmymovies.screens.MainActivity;
@@ -34,9 +37,11 @@ public class MovieViewModel extends AndroidViewModel {
     private static MovieDatabase database;
     private CompositeDisposable compositeDisposable;
     private CompositeDisposable compositeDisposableTrailers;
+    private CompositeDisposable compositeDisposableReviews;
     public LiveData<List<Movie>> movies;
     public LiveData<List<FavouriteMovie>> favouriteMovies;
     public LiveData<List<Trailer>> trailers;
+    public LiveData<List<Review>> reviews;
 
     public static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
     private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
@@ -54,7 +59,9 @@ public class MovieViewModel extends AndroidViewModel {
         favouriteMovies = database.movieDao().getAllFavouriteMovies();
         compositeDisposable = new CompositeDisposable();
         compositeDisposableTrailers = new CompositeDisposable();
+        compositeDisposableReviews = new CompositeDisposable();
         trailers = database.movieDao().getTrailers();
+        reviews = database.movieDao().getReviews();
     }
 
     public LiveData<List<Movie>> getMovies () {
@@ -64,6 +71,8 @@ public class MovieViewModel extends AndroidViewModel {
     public LiveData<List<FavouriteMovie>> getFavouriteMovies () {return favouriteMovies; }
 
     public LiveData<List<Trailer>> getTrailers () {return trailers; }
+
+    public LiveData<List<Review>> getReviews () {return reviews; }
 
     public void insertMovies (List<Movie> movies) {
         new InsertMovieTask().execute(movies);
@@ -187,6 +196,32 @@ public class MovieViewModel extends AndroidViewModel {
         }
     }
 
+    public void deleteAllReviews () {
+        new DeleteAllReviesTask().execute();
+    }
+
+    public static class DeleteAllReviesTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            database.movieDao().deleteAllReviews();
+            return null;
+        }
+    }
+
+    public void insertReviews (List<Review> reviews) {
+        new InsertReviewsTask().execute(reviews);
+    }
+
+    public static class InsertReviewsTask extends AsyncTask<List<Review>, Void, Void> {
+        @Override
+        protected Void doInBackground(List<Review>... lists) {
+            if (lists != null && lists.length > 0) {
+                database.movieDao().insertReviews(lists[0]);
+            }
+            return null;
+        }
+    }
+
     public void loadData (String lang, int methodOfSort, int page) {
         String sortBy = null;
         if (methodOfSort == 1) {
@@ -253,11 +288,40 @@ public class MovieViewModel extends AndroidViewModel {
         compositeDisposableTrailers.add(disposable);
     }
 
+    public void loadReviews (int id, String lang) {
+        ApiFactory apiFactory = ApiFactory.getInstance();
+        ApiServiseReviews apiServiseReviews = apiFactory.getApiServiseReviews();
+        Disposable disposable = apiServiseReviews.getReviews(id, lang)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ReviewsResult>() {
+                    @Override
+                    public void accept(ReviewsResult reviewsResult) throws Exception {
+                        List<Review> reviews = reviewsResult.getReviews();
+                        deleteAllReviews();
+                        insertReviews(reviews);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+
+    }
+
+
+
     @Override
     protected void onCleared() {
         super.onCleared();
         if (compositeDisposable != null) {
             compositeDisposable.dispose();
+        } if (compositeDisposableTrailers!= null) {
+            compositeDisposableTrailers.dispose();
+        }
+        if (compositeDisposableReviews != null) {
+            compositeDisposableReviews.dispose();
         }
     }
 }
