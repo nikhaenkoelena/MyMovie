@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,14 +16,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.testingmymovies.MovieViewModel;
 import com.example.testingmymovies.R;
+import com.example.testingmymovies.adapters.ReviewsAdapter;
 import com.example.testingmymovies.adapters.TrailersAdapter;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
+import com.example.testingmymovies.pojo.Review;
 import com.example.testingmymovies.pojo.Trailer;
 import com.squareup.picasso.Picasso;
 
@@ -43,11 +47,15 @@ public class DetailActivity extends AppCompatActivity {
     private Movie movie;
     private FavouriteMovie favouriteMovie;
     private String lang;
+    private ScrollView scrollViewInfo;
 
     private RecyclerView recyclerViewTrailers;
+    private RecyclerView recyclerViewReviews;
     private TrailersAdapter trailersAdapter;
+    private ReviewsAdapter reviewsAdapter;
 
     private LiveData<List<Trailer>> trailers;
+    private LiveData<List<Review>> reviews;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,9 +109,13 @@ public class DetailActivity extends AppCompatActivity {
         }
         setFavourite();
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
+        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
         trailersAdapter =  new TrailersAdapter();
+        reviewsAdapter = new ReviewsAdapter();
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTrailers.setAdapter(trailersAdapter);
+        recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewReviews.setAdapter(reviewsAdapter);
         trailers = viewModel.getTrailers();
         trailers.observe(this, new Observer<List<Trailer>>() {
             @Override
@@ -114,7 +126,22 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
+            @Override
+            public void onTrailerClick(String url) {
+                Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intentToTrailer);
+            }
+        });
         viewModel.loadTrailers(id, lang);
+        reviews = viewModel.getReviews();
+        reviews.observe(this, new Observer<List<Review>>() {
+            @Override
+            public void onChanged(List<Review> reviews) {
+                reviewsAdapter.setReviews(reviews);
+            }
+        });
+        viewModel.loadReviews(id, lang);
     }
 
     public void onClickAddToFavourite(View view) {

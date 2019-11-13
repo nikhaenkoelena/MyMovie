@@ -9,9 +9,10 @@ import androidx.room.RoomDatabase;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.pojo.MovieResult;
+import com.example.testingmymovies.pojo.Review;
 import com.example.testingmymovies.pojo.Trailer;
 
-@Database(entities = {Movie.class, FavouriteMovie.class, Trailer.class}, version = 5, exportSchema = false)
+@Database(entities = {Movie.class, FavouriteMovie.class, Trailer.class, Review.class}, version = 6, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
 
     private static MovieDatabase database;
