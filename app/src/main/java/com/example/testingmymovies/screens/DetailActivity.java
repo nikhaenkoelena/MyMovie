@@ -102,6 +102,7 @@ public class DetailActivity extends AppCompatActivity {
             textViewOriginTitle.setText(movie.getOriginal_title());
             textViewReleaseDate.setText(movie.getRelease_date());
             textViewOverview.setText(movie.getOverview());
+            trailersAdapter.setTrailers(movie.getTrailers());
         } else {
             Toast.makeText(this, R.string.loading_error, Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), MainActivity.class);
@@ -116,32 +117,42 @@ public class DetailActivity extends AppCompatActivity {
         recyclerViewTrailers.setAdapter(trailersAdapter);
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewReviews.setAdapter(reviewsAdapter);
-        trailers = viewModel.getTrailers();
-        trailers.observe(this, new Observer<List<Trailer>>() {
-            @Override
-            public void onChanged(List<Trailer> trailers) {
-                trailersAdapter.setTrailers(trailers);
-                for (Trailer trailer:trailers) {
-                    Log.i("проверка", trailer.getName());
-                }
-            }
-        });
-        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
-            @Override
-            public void onTrailerClick(String url) {
-                Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intentToTrailer);
-            }
-        });
         viewModel.loadTrailers(id, lang);
-        reviews = viewModel.getReviews();
-        reviews.observe(this, new Observer<List<Review>>() {
-            @Override
-            public void onChanged(List<Review> reviews) {
-                reviewsAdapter.setReviews(reviews);
-            }
-        });
-        viewModel.loadReviews(id, lang);
+//        trailers = viewModel.getTrailers();
+//        trailers.observe(this, new Observer<List<Trailer>>() {
+//            @Override
+//            public void onChanged(List<Trailer> trailers) {
+//                trailersAdapter.setTrailers(trailers);
+//                for (Trailer trailer:trailers) {
+//                    Log.i("проверка", trailer.getName());
+//                }
+//            }
+//        });
+//        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
+//            @Override
+//            public void onTrailerClick(String url) {
+//                Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                startActivity(intentToTrailer);
+//            }
+//        });
+//        viewModel.loadTrailers(id, lang);
+//        reviews = viewModel.getReviews();
+//        reviews.observe(this, new Observer<List<Review>>() {
+//            @Override
+//            public void onChanged(List<Review> reviews) {
+//                reviewsAdapter.setReviews(reviews);
+//            }
+//        });
+//        viewModel.loadReviews(id, lang);
+//        viewModel.getErrors().observe(this, new Observer<Throwable>() {
+//            @Override
+//            public void onChanged(Throwable throwable) {
+//                if(throwable != null) {
+//                    Toast.makeText(DetailActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
+//                    viewModel.clearError();
+//                }
+//            }
+//        });
     }
 
     public void onClickAddToFavourite(View view) {

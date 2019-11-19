@@ -8,7 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-<!--    <style name="LabelsStyle">-->
-<!--        <item name=""-->
+    <style name="LabelsStyle">
+        <item name="android:textColor">@color/colorOrange</item>
+        <item name="android:textSize">16dp</item>
+    </style>
 
 </resources>

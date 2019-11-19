@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.testingmymovies.api.ApiFactory;
 import com.example.testingmymovies.api.ApiServise;
@@ -42,6 +43,7 @@ public class MovieViewModel extends AndroidViewModel {
     public LiveData<List<FavouriteMovie>> favouriteMovies;
     public LiveData<List<Trailer>> trailers;
     public LiveData<List<Review>> reviews;
+    public MutableLiveData<Throwable> errors;
 
     public static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
     private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
@@ -60,8 +62,11 @@ public class MovieViewModel extends AndroidViewModel {
         compositeDisposable = new CompositeDisposable();
         compositeDisposableTrailers = new CompositeDisposable();
         compositeDisposableReviews = new CompositeDisposable();
-        trailers = database.movieDao().getTrailers();
-        reviews = database.movieDao().getReviews();
+        errors = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<Throwable> getErrors() {
+        return errors;
     }
 
     public LiveData<List<Movie>> getMovies () {
@@ -70,9 +75,8 @@ public class MovieViewModel extends AndroidViewModel {
 
     public LiveData<List<FavouriteMovie>> getFavouriteMovies () {return favouriteMovies; }
 
-    public LiveData<List<Trailer>> getTrailers () {return trailers; }
-
     public LiveData<List<Review>> getReviews () {return reviews; }
+
 
     public void insertMovies (List<Movie> movies) {
         new InsertMovieTask().execute(movies);
@@ -170,57 +174,75 @@ public class MovieViewModel extends AndroidViewModel {
         }
     }
 
-    public void insertTrailers (List<Trailer> trailers) {
-        new InsertTrailersTask().execute(trailers);
+//    public void insertTrailers (List<Trailer> trailers) {
+//        new InsertTrailersTask().execute(trailers);
+//    }
+//
+//    public static class InsertTrailersTask extends AsyncTask<List<Trailer>, Void, Void> {
+//        @Override
+//        protected Void doInBackground(List<Trailer>... lists) {
+//            if(lists != null && lists.length >0) {
+//                database.movieDao().insertTrailers(lists[0]);
+//            }
+//            return null;
+//        }
+//    }
+//
+//    public void deleteAllTrailers () {
+//        new DeleteAllTrailersTask().execute();
+//    }
+//
+//    public static class DeleteAllTrailersTask extends AsyncTask<Void, Void, Void> {
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            database.movieDao().deleteAllTrailers();
+//            return null;
+//        }
+//    }
+//
+//    public void deleteAllReviews () {
+//        new DeleteAllReviesTask().execute();
+//    }
+//
+//    public static class DeleteAllReviesTask extends AsyncTask<Void, Void, Void> {
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            database.movieDao().deleteAllReviews();
+//            return null;
+//        }
+//    }
+//
+//    public void insertReviews (List<Review> reviews) {
+//        new InsertReviewsTask().execute(reviews);
+//    }
+//
+//    public static class InsertReviewsTask extends AsyncTask<List<Review>, Void, Void> {
+//        @Override
+//        protected Void doInBackground(List<Review>... lists) {
+//            if (lists != null && lists.length > 0) {
+//                database.movieDao().insertReviews(lists[0]);
+//            }
+//            return null;
+//        }
+//    }
+
+    public void insertAllTrailers (List<Trailer> trailers) {
+        new InsertAllTrailersTask().execute(trailers);
     }
 
-    public static class InsertTrailersTask extends AsyncTask<List<Trailer>, Void, Void> {
+    public static class InsertAllTrailersTask extends AsyncTask<List<Trailer>, Void, Void> {
         @Override
         protected Void doInBackground(List<Trailer>... lists) {
-            if(lists != null && lists.length >0) {
-                database.movieDao().insertTrailers(lists[0]);
+            if(lists != null && lists.length>0) {
+                Trailer trailer = lists[0].get(0);
+                int id = Integer.parseInt(trailer.getId());
+                database.movieDao().insertAllTrailers(lists[0], id);
             }
             return null;
         }
     }
 
-    public void deleteAllTrailers () {
-        new DeleteAllTrailersTask().execute();
-    }
 
-    public static class DeleteAllTrailersTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            database.movieDao().deleteAllTrailers();
-            return null;
-        }
-    }
-
-    public void deleteAllReviews () {
-        new DeleteAllReviesTask().execute();
-    }
-
-    public static class DeleteAllReviesTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            database.movieDao().deleteAllReviews();
-            return null;
-        }
-    }
-
-    public void insertReviews (List<Review> reviews) {
-        new InsertReviewsTask().execute(reviews);
-    }
-
-    public static class InsertReviewsTask extends AsyncTask<List<Review>, Void, Void> {
-        @Override
-        protected Void doInBackground(List<Review>... lists) {
-            if (lists != null && lists.length > 0) {
-                database.movieDao().insertReviews(lists[0]);
-            }
-            return null;
-        }
-    }
 
     public void loadData (String lang, int methodOfSort, int page) {
         String sortBy = null;
@@ -253,7 +275,7 @@ public class MovieViewModel extends AndroidViewModel {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        errors.setValue(throwable);
                     }
                 });
         compositeDisposable.add(disposable);
@@ -275,41 +297,43 @@ public class MovieViewModel extends AndroidViewModel {
                             Log.i("трейлер", trailer.getKey());
                             trailers.add(trailer);
                         }
-                        deleteAllTrailers();
-                        insertTrailers(trailers);
+                        insertAllTrailers(trailers);
 
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        errors.setValue(throwable);
                     }
                 });
         compositeDisposableTrailers.add(disposable);
     }
 
-    public void loadReviews (int id, String lang) {
-        ApiFactory apiFactory = ApiFactory.getInstance();
-        ApiServiseReviews apiServiseReviews = apiFactory.getApiServiseReviews();
-        Disposable disposable = apiServiseReviews.getReviews(id, lang)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ReviewsResult>() {
-                    @Override
-                    public void accept(ReviewsResult reviewsResult) throws Exception {
-                        List<Review> reviews = reviewsResult.getReviews();
-                        deleteAllReviews();
-                        insertReviews(reviews);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+//    public void loadReviews (int id, String lang) {
+//        ApiFactory apiFactory = ApiFactory.getInstance();
+//        ApiServiseReviews apiServiseReviews = apiFactory.getApiServiseReviews();
+//        Disposable disposable = apiServiseReviews.getReviews(id, lang)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<ReviewsResult>() {
+//                    @Override
+//                    public void accept(ReviewsResult reviewsResult) throws Exception {
+//                        List<Review> reviews = reviewsResult.getReviews();
+//                        deleteAllReviews();
+//                        insertReviews(reviews);
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        errors.setValue(throwable);
+//                    }
+//                });
+//
+//    }
 
-                    }
-                });
-
+    public void clearError () {
+        errors.setValue(null);
     }
-
 
 
     @Override

@@ -6,7 +6,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.TypeConverters;
 
+import com.example.testingmymovies.converters.Converter;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.pojo.Review;
@@ -17,6 +19,7 @@ import java.util.List;
 import retrofit2.http.DELETE;
 
 @Dao
+@TypeConverters(value = Converter.class)
 public interface MovieDao {
 
     @Query("SELECT * FROM moviestable")
@@ -43,22 +46,27 @@ public interface MovieDao {
     @Delete
     void deleteFavouriteMovie (FavouriteMovie favouriteMovie);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertTrailers (List<Trailer> trailers);
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    void insertTrailers (List<Trailer> trailers);
+//
+//    @Query("DELETE FROM trailerstable")
+//    void deleteAllTrailers ();
+//
+//    @Query("SELECT * FROM trailerstable")
+//    LiveData<List<Trailer>> getTrailers ();
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    void insertReviews (List<Review> reviews);
+//
+//    @Query("DELETE FROM reviewstable")
+//    void deleteAllReviews ();
+//
+//    @Query("SELECT * FROM reviewstable")
+//    LiveData<List<Review>> getReviews ();
 
-    @Query("DELETE FROM trailerstable")
-    void deleteAllTrailers ();
+    @Query("UPDATE moviestable SET trailers =:trailers WHERE id == :movieId" )
+    void insertAllTrailers (List<Trailer> trailers, int movieId);
 
-    @Query("SELECT * FROM trailerstable")
-    LiveData<List<Trailer>> getTrailers ();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertReviews (List<Review> reviews);
-
-    @Query("DELETE FROM reviewstable")
-    void deleteAllReviews ();
-
-    @Query("SELECT * FROM reviewstable")
-    LiveData<List<Review>> getReviews ();
-
+    @Query("SELECT trailers FROM moviestable WHERE id ==:movieId")
+    String getAllTrailers (int movieId);
 }
