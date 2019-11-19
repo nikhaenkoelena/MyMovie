@@ -32,10 +32,11 @@
 
     <TextView
         android:id="@+id/textViewLabelTitle"
+        style="@style/LabelsStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/label_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewBigPoster" />
@@ -55,6 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        style="@style/LabelsStyle"
         android:text="@string/label_origin_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewLabelTitle" />
@@ -74,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        style="@style/LabelsStyle"
         android:text="@string/label_release_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewLabelOriginTitle" />
@@ -93,6 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        style="@style/LabelsStyle"
         android:text="@string/label_overview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textVieReleaseDateLabel" />
@@ -122,6 +126,7 @@
         android:id="@+id/textViewLabelTrailers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/LabelsStyle"
         android:text="Трейлеры:"
         android:layout_marginTop="8dp"
         android:layout_marginStart="10dp"
@@ -141,6 +146,7 @@
         android:id="@+id/textViewLabelReviews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/LabelsStyle"
         android:text="Отзывы:"
         android:layout_marginTop="8dp"
         android:layout_marginStart="10dp"
