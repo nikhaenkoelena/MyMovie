@@ -11,14 +11,15 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:background="@color/colorLightViolet">
 
             <ImageView
                 android:id="@+id/imageViewIconTrailer"
                 android:background="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_media_play"
+                android:src="@drawable/iconplay"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -30,6 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
+                style="@style/TextStyle"
                 app:layout_constraintStart_toEndOf="@+id/imageViewIconTrailer"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_margin="8dp"/>

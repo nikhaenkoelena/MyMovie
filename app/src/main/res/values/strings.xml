@@ -1,18 +1,20 @@
 <resources>
-    <string name="app_name">TestingMyMovies</string>
+    <string name="app_name">MyMovies</string>
     <string name="menu_option_main">Main</string>
     <string name="menu_option_favourite">Favourite</string>
-    <string name="switch_popularity">Most popular</string>
+    <string name="switch_popularity">Popularity</string>
     <string name="switch_top_rated">Top rated</string>
-    <string name="added_to_favourite">Добавлено в избранное</string>
-    <string name="removed_from_favourite">Удалено из избранного</string>
-    <string name="loading_error">Ошибка загрузки</string>
-    <string name="label_title">Название:</string>
-    <string name="label_origin_title">Оригинальное название:</string>
-    <string name="label_release_date">Дата выхода:</string>
-    <string name="label_overview">Описание:</string>
-    <string name="description_button_add_to_favourite">Кнопка добавить в избранное</string>
-    <string name="description_poster">Постер фильма</string>
-    <string name="description_poster_item">Постер фильма в списке</string>
-    <string name="description_icon_videoplayer">Иконка видеоплейера</string>
+    <string name="added_to_favourite">Added to favourite</string>
+    <string name="removed_from_favourite">Removed from favourite</string>
+    <string name="loading_error">Loading error</string>
+    <string name="label_title">Name:</string>
+    <string name="label_origin_title">Original name:</string>
+    <string name="label_release_date">Release date:</string>
+    <string name="label_overview">Overview:</string>
+    <string name="description_button_add_to_favourite">Button add to favourite</string>
+    <string name="description_poster">Movies poster</string>
+    <string name="description_poster_item">Movies poster in the list</string>
+    <string name="description_icon_videoplayer">Videoplays icon</string>
+    <string name="label_trailers">Trailers:</string>
+    <string name="label_reviews">Reviews:</string>
 </resources>

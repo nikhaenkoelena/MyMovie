@@ -3,14 +3,19 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:titleTextColor">@color/colorWhiteViolet</item>
+        <item name="colorPrimary">@color/colorVioletDark</item>
+        <item name="colorPrimaryDark">@color/colorVioletDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="LabelsStyle">
         <item name="android:textColor">@color/colorOrange</item>
         <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="TextStyle">
+        <item name="android:textColor">@color/colorWhiteViolet</item>
     </style>
 
 </resources>

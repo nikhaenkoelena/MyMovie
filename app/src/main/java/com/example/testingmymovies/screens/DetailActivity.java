@@ -47,7 +47,9 @@ public class DetailActivity extends AppCompatActivity {
     private Movie movie;
     private FavouriteMovie favouriteMovie;
     private String lang;
-    private ScrollView scrollViewInfo;
+
+    private TextView textViewLabelTrailers;
+    private TextView textViewLabelReviews;
 
     private RecyclerView recyclerViewTrailers;
     private RecyclerView recyclerViewReviews;
@@ -91,18 +93,19 @@ public class DetailActivity extends AppCompatActivity {
         textViewReleaseDate = findViewById(R.id.textViewReleaseDate);
         textViewOverview = findViewById(R.id.textViewOverView);
         imageViewAddToFavourite = findViewById(R.id.imageViewAddToFavourite);
+        textViewLabelTrailers = findViewById(R.id.textViewLabelTrailers);
+        textViewLabelReviews = findViewById(R.id.textViewLabelReviews);
         lang = Locale.getDefault().getLanguage();
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", -1);
             movie = viewModel.getMovieById(id);
-            Picasso.get().load(movie.getPoster_path_big()).into(imageView);
+            Picasso.get().load(movie.getPoster_path_big()).placeholder(R.drawable.placeholder).into(imageView);
             textViewTitle.setText(movie.getTitle());
             textViewOriginTitle.setText(movie.getOriginal_title());
             textViewReleaseDate.setText(movie.getRelease_date());
             textViewOverview.setText(movie.getOverview());
-            trailersAdapter.setTrailers(movie.getTrailers());
         } else {
             Toast.makeText(this, R.string.loading_error, Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(getApplicationContext(), MainActivity.class);
@@ -117,42 +120,47 @@ public class DetailActivity extends AppCompatActivity {
         recyclerViewTrailers.setAdapter(trailersAdapter);
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewReviews.setAdapter(reviewsAdapter);
+        viewModel.deleteAllTrailers();
+        viewModel.deleteAllReviews();
         viewModel.loadTrailers(id, lang);
-//        trailers = viewModel.getTrailers();
-//        trailers.observe(this, new Observer<List<Trailer>>() {
-//            @Override
-//            public void onChanged(List<Trailer> trailers) {
-//                trailersAdapter.setTrailers(trailers);
-//                for (Trailer trailer:trailers) {
-//                    Log.i("проверка", trailer.getName());
-//                }
-//            }
-//        });
-//        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
-//            @Override
-//            public void onTrailerClick(String url) {
-//                Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                startActivity(intentToTrailer);
-//            }
-//        });
-//        viewModel.loadTrailers(id, lang);
-//        reviews = viewModel.getReviews();
-//        reviews.observe(this, new Observer<List<Review>>() {
-//            @Override
-//            public void onChanged(List<Review> reviews) {
-//                reviewsAdapter.setReviews(reviews);
-//            }
-//        });
-//        viewModel.loadReviews(id, lang);
-//        viewModel.getErrors().observe(this, new Observer<Throwable>() {
-//            @Override
-//            public void onChanged(Throwable throwable) {
-//                if(throwable != null) {
-//                    Toast.makeText(DetailActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
-//                    viewModel.clearError();
-//                }
-//            }
-//        });
+        trailers = viewModel.getTrailers();
+        trailers.observe(this, new Observer<List<Trailer>>() {
+            @Override
+            public void onChanged(List<Trailer> trailers) {
+                trailersAdapter.setTrailers(trailers);
+                if(trailers.isEmpty()) {
+                    textViewLabelTrailers.setVisibility(View.INVISIBLE);
+                } else {textViewLabelTrailers.setVisibility(View.VISIBLE);}
+            }
+        });
+        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
+            @Override
+            public void onTrailerClick(String url) {
+                Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intentToTrailer);
+            }
+        });
+        viewModel.loadTrailers(id, lang);
+        reviews = viewModel.getReviews();
+        reviews.observe(this, new Observer<List<Review>>() {
+            @Override
+            public void onChanged(List<Review> reviews) {
+                reviewsAdapter.setReviews(reviews);
+                if (reviews.isEmpty()) {
+                    textViewLabelReviews.setVisibility(View.INVISIBLE);
+                } else {textViewLabelReviews.setVisibility(View.VISIBLE);}
+            }
+        });
+        viewModel.loadReviews(id, lang);
+        viewModel.getErrors().observe(this, new Observer<Throwable>() {
+            @Override
+            public void onChanged(Throwable throwable) {
+                if(throwable != null) {
+                    Toast.makeText(DetailActivity.this, R.string.loading_error, Toast.LENGTH_SHORT).show();
+                    viewModel.clearError();
+                }
+            }
+        });
     }
 
     public void onClickAddToFavourite(View view) {

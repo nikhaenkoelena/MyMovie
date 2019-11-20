@@ -12,7 +12,7 @@ import com.example.testingmymovies.pojo.MovieResult;
 import com.example.testingmymovies.pojo.Review;
 import com.example.testingmymovies.pojo.Trailer;
 
-@Database(entities = {Movie.class, FavouriteMovie.class}, version = 7, exportSchema = false)
+@Database(entities = {Movie.class, FavouriteMovie.class, Trailer.class, Review.class}, version = 9, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
 
     private static MovieDatabase database;

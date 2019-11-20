@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyMovies</string>
+    <string name="menu_option_main">Principal</string>
+    <string name="menu_option_favourite">Favoritas</string>
+    <string name="switch_popularity">Populares</string>
+    <string name="switch_top_rated">De votos</string>
+    <string name="added_to_favourite">Agregado a favoritas</string>
+    <string name="removed_from_favourite">Eliminado de favoritas</string>
+    <string name="loading_error">Error de carga</string>
+    <string name="label_title">Titulo:</string>
+    <string name="label_origin_title">Titulo original:</string>
+    <string name="label_release_date">Fecha de estreno:</string>
+    <string name="label_overview">Descripcion:</string>
+    <string name="description_button_add_to_favourite">El botón Agregar a Favoritos</string>
+    <string name="description_poster">Cartel de la película</string>
+    <string name="description_poster_item">Cartel de la película en la lista</string>
+    <string name="description_icon_videoplayer">Icono de reproductor de video</string>
+    <string name="label_trailers">Tráileres:</string>
+    <string name="label_reviews">Comentarios:</string>
+</resources>
