@@ -14,7 +14,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 @Entity(tableName = "moviestable")
-@TypeConverters(value = Converter.class)
 public class Movie {
     @PrimaryKey (autoGenerate = true)
     @SerializedName("uniqId")
@@ -50,12 +49,8 @@ public class Movie {
     @SerializedName("release_date")
     @Expose
     private String release_date;
-    @SerializedName("trailers")
-    @Expose
-    private List<Trailer> trailers = null;
 
 
-    @Ignore
     public Movie(int uniqId, int id, int vote_count, double vote_average, String title, String original_title, String poster_path_small, String poster_path_big, String backdrop_path, String overview, String release_date) {
         this.uniqId = uniqId;
         this.id = id;
@@ -84,20 +79,6 @@ public class Movie {
         this.release_date = release_date;
     }
 
-    public Movie(int uniqId, int id, int vote_count, double vote_average, String title, String original_title, String poster_path_big, String poster_path_small, String backdrop_path, String overview, String release_date, List<Trailer> trailers) {
-        this.uniqId = uniqId;
-        this.id = id;
-        this.vote_count = vote_count;
-        this.vote_average = vote_average;
-        this.title = title;
-        this.original_title = original_title;
-        this.poster_path_big = poster_path_big;
-        this.poster_path_small = poster_path_small;
-        this.backdrop_path = backdrop_path;
-        this.overview = overview;
-        this.release_date = release_date;
-        this.trailers = trailers;
-    }
 
     public int getUniqId() {
         return uniqId;
@@ -187,11 +168,4 @@ public class Movie {
         this.poster_path_big = poster_path_big;
     }
 
-    public List<Trailer> getTrailers() {
-        return trailers;
-    }
-
-    public void setTrailers(List<Trailer> trailers) {
-        this.trailers = trailers;
-    }
 }

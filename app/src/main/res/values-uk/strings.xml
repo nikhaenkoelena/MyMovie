@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyMovies</string>
+    <string name="menu_option_main">Головна</string>
+    <string name="menu_option_favourite">Обране</string>
+    <string name="switch_popularity">Популярнi</string>
+    <string name="switch_top_rated">Рейтинговi</string>
+    <string name="added_to_favourite">Додано в обране</string>
+    <string name="removed_from_favourite">Видалено з обраного</string>
+    <string name="loading_error">Помилка завантаження</string>
+    <string name="label_title">Назва:</string>
+    <string name="label_origin_title">Оригiнальна назва:</string>
+    <string name="label_release_date">Дата виходу:</string>
+    <string name="label_overview">Про фiльм:</string>
+    <string name="description_button_add_to_favourite">Кнопка додати в обране</string>
+    <string name="description_poster">Постер фiльму</string>
+    <string name="description_poster_item">Постер фiльму в списцi</string>
+    <string name="description_icon_videoplayer">Iконка відеоплеєра</string>
+    <string name="label_trailers">Трейлери:</string>
+    <string name="label_reviews">Вiдгуки:</string>
+</resources>
