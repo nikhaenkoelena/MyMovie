@@ -42,10 +42,10 @@ public class ApiFactory {
         return apiFactory;
     }
 
-    public ApiServise getApiServise () { return retrofit.create(ApiServise.class); }
+    public ApiService getApiServise () { return retrofit.create(ApiService.class); }
 
-    public ApiServiseVideo getApiServiseVideo () { return retrofitVideos.create(ApiServiseVideo.class); }
+    public ApiServiceVideo getApiServiseVideo () { return retrofitVideos.create(ApiServiceVideo.class); }
 
-    public ApiServiseReviews getApiServiseReviews () { return retrofitReviews.create(ApiServiseReviews.class); }
+    public ApiServiceReviews getApiServiseReviews () { return retrofitReviews.create(ApiServiceReviews.class); }
 
 }
