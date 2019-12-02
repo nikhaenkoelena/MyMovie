@@ -1,17 +1,15 @@
-package com.example.testingmymovies.screens;
+package com.example.testingmymovies.screens.screen_main;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,12 +18,12 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.testingmymovies.MovieViewModel;
 import com.example.testingmymovies.R;
 import com.example.testingmymovies.adapters.MovieAdapter;
 import com.example.testingmymovies.pojo.Movie;
+import com.example.testingmymovies.screens.screen_detail.DetailActivity;
+import com.example.testingmymovies.screens.screen_favourite.FavouriteActivity;
 
 import java.util.List;
 import java.util.Locale;

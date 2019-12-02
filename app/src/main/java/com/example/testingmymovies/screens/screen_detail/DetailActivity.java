@@ -1,4 +1,4 @@
-package com.example.testingmymovies.screens;
+package com.example.testingmymovies.screens.screen_detail;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -10,17 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.testingmymovies.MovieViewModel;
 import com.example.testingmymovies.R;
 import com.example.testingmymovies.adapters.ReviewsAdapter;
 import com.example.testingmymovies.adapters.TrailersAdapter;
@@ -28,9 +25,11 @@ import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.pojo.Review;
 import com.example.testingmymovies.pojo.Trailer;
+import com.example.testingmymovies.screens.screen_favourite.FavouriteActivity;
+import com.example.testingmymovies.screens.screen_favourite.FavouriteViewModel;
+import com.example.testingmymovies.screens.screen_main.MainActivity;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,7 +40,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView textViewOriginTitle;
     private TextView textViewReleaseDate;
     private TextView textViewOverview;
-    private MovieViewModel viewModel;
+    private DetailViewModel detailViewModel;
+    private FavouriteViewModel favouriteViewModel;
     private ImageView imageViewAddToFavourite;
     private int id;
     private Movie movie;
@@ -96,11 +96,12 @@ public class DetailActivity extends AppCompatActivity {
         textViewLabelTrailers = findViewById(R.id.textViewLabelTrailers);
         textViewLabelReviews = findViewById(R.id.textViewLabelReviews);
         lang = Locale.getDefault().getLanguage();
-        viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        detailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
+        favouriteViewModel = ViewModelProviders.of(this).get(FavouriteViewModel.class);
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", -1);
-            movie = viewModel.getMovieById(id);
+            movie = detailViewModel.getMovieById(id);
             Picasso.get().load(movie.getPoster_path_big()).placeholder(R.drawable.placeholder).into(imageView);
             textViewTitle.setText(movie.getTitle());
             textViewOriginTitle.setText(movie.getOriginal_title());
@@ -120,10 +121,10 @@ public class DetailActivity extends AppCompatActivity {
         recyclerViewTrailers.setAdapter(trailersAdapter);
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewReviews.setAdapter(reviewsAdapter);
-        viewModel.deleteAllTrailers();
-        viewModel.deleteAllReviews();
-        viewModel.loadTrailers(id, lang);
-        trailers = viewModel.getTrailers();
+        detailViewModel.deleteAllTrailers();
+        detailViewModel.deleteAllReviews();
+        detailViewModel.loadTrailers(id, lang);
+        trailers = detailViewModel.getTrailers();
         trailers.observe(this, new Observer<List<Trailer>>() {
             @Override
             public void onChanged(List<Trailer> trailers) {
@@ -140,8 +141,8 @@ public class DetailActivity extends AppCompatActivity {
                 startActivity(intentToTrailer);
             }
         });
-        viewModel.loadTrailers(id, lang);
-        reviews = viewModel.getReviews();
+        detailViewModel.loadTrailers(id, lang);
+        reviews = detailViewModel.getReviews();
         reviews.observe(this, new Observer<List<Review>>() {
             @Override
             public void onChanged(List<Review> reviews) {
@@ -151,13 +152,13 @@ public class DetailActivity extends AppCompatActivity {
                 } else {textViewLabelReviews.setVisibility(View.VISIBLE);}
             }
         });
-        viewModel.loadReviews(id, lang);
-        viewModel.getErrors().observe(this, new Observer<Throwable>() {
+        detailViewModel.loadReviews(id, lang);
+        detailViewModel.getErrors().observe(this, new Observer<Throwable>() {
             @Override
             public void onChanged(Throwable throwable) {
                 if(throwable != null) {
                     Toast.makeText(DetailActivity.this, R.string.loading_error, Toast.LENGTH_SHORT).show();
-                    viewModel.clearError();
+                    detailViewModel.clearError();
                 }
             }
         });
@@ -165,17 +166,17 @@ public class DetailActivity extends AppCompatActivity {
 
     public void onClickAddToFavourite(View view) {
         if (favouriteMovie == null) {
-            viewModel.insertFavouriteMovie(new FavouriteMovie(movie));
+            favouriteViewModel.insertFavouriteMovie(new FavouriteMovie(movie));
             Toast.makeText(this, R.string.added_to_favourite, Toast.LENGTH_SHORT).show();
         } else {
-            viewModel.deleteFavouriteMovie(favouriteMovie);
+            favouriteViewModel.deleteFavouriteMovie(favouriteMovie);
             Toast.makeText(this, R.string.removed_from_favourite, Toast.LENGTH_SHORT).show();
         }
         setFavourite();
     }
 
     private void setFavourite () {
-        favouriteMovie = viewModel.getFavouriteMovieById(id);
+        favouriteMovie = favouriteViewModel.getFavouriteMovieById(id);
         if (favouriteMovie == null) {
             Picasso.get().load(R.drawable.favourite_add_to).into(imageViewAddToFavourite);
         } else {

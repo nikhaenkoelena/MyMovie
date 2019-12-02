@@ -1,4 +1,4 @@
-package com.example.testingmymovies.screens;
+package com.example.testingmymovies.screens.screen_favourite;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -14,21 +14,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.example.testingmymovies.MovieViewModel;
+import com.example.testingmymovies.screens.screen_main.MovieViewModel;
 import com.example.testingmymovies.R;
 import com.example.testingmymovies.adapters.MovieAdapter;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
+import com.example.testingmymovies.screens.screen_main.MainActivity;
+import com.example.testingmymovies.screens.screen_detail.DetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 public class FavouriteActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private MovieAdapter adapter;
-    private MovieViewModel viewModel;
+    private FavouriteViewModel viewModel;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,7 +69,7 @@ public class FavouriteActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, getColumCoutnt()));
         adapter = new MovieAdapter();
         recyclerView.setAdapter(adapter);
-        viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(FavouriteViewModel.class);
         final LiveData<List<FavouriteMovie>> favouritemovies = viewModel.getFavouriteMovies();
         favouritemovies.observe(this, new Observer<List<FavouriteMovie>>() {
             @Override
