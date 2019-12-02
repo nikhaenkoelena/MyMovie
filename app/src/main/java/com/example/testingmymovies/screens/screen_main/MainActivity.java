@@ -97,6 +97,14 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MovieAdapter();
         recyclerView.setAdapter(adapter);
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        setOnPosterClickListener();
+        setOnCheckedChangeListener();
+        setOnReachEndListener();
+        getMovies();
+        viewModel.loadData(lang, methodOfSort, page);
+    }
+
+    private void setOnPosterClickListener () {
         adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
@@ -106,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void setOnCheckedChangeListener () {
         switchSortBy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -113,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
                 setMethodOfSort(isChecked);
             }
         });
+    }
+
+    private void setOnReachEndListener () {
         adapter.setOnReachEndListener(new MovieAdapter.OnReachEndListener() {
             @Override
             public void onReachEnd() {
@@ -123,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void getMovies () {
         movies = viewModel.getMovies();
         movies.observe(this, new Observer<List<Movie>>() {
             @Override
@@ -135,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        viewModel.loadData(lang, methodOfSort, page);
     }
 
     public void onClickTopRated(View view) {

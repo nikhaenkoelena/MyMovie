@@ -9,8 +9,6 @@ public class ApiFactory {
 
     private static ApiFactory apiFactory;
     private static Retrofit retrofit;
-    private static Retrofit retrofitVideos;
-    private static Retrofit retrofitReviews;
     private static final String BASE_URL = "https://api.themoviedb.org/3/";
 
 
