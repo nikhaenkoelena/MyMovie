@@ -11,9 +11,8 @@ public class ApiFactory {
     private static Retrofit retrofit;
     private static Retrofit retrofitVideos;
     private static Retrofit retrofitReviews;
-    private static final String BASE_URL = "https://api.themoviedb.org/3/discover/";
-    private static final String BASE_URL_VIDEOS = "https://api.themoviedb.org/3/movie/";
-    private static final String BASE_URL_REVIEWS = "https://api.themoviedb.org/3/movie/";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/";
+
 
     private ApiFactory() {
         retrofit = new Retrofit.Builder()
@@ -22,17 +21,6 @@ public class ApiFactory {
                 .baseUrl(BASE_URL)
                 .build();
 
-        retrofitVideos = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(BASE_URL_VIDEOS)
-                .build();
-
-        retrofitReviews = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl(BASE_URL_REVIEWS)
-                .build();
     }
 
     public static ApiFactory getInstance() {
@@ -44,8 +32,8 @@ public class ApiFactory {
 
     public ApiService getApiServise () { return retrofit.create(ApiService.class); }
 
-    public ApiServiceVideo getApiServiseVideo () { return retrofitVideos.create(ApiServiceVideo.class); }
+    public ApiServiceVideo getApiServiseVideo () { return retrofit.create(ApiServiceVideo.class); }
 
-    public ApiServiceReviews getApiServiseReviews () { return retrofitReviews.create(ApiServiceReviews.class); }
+    public ApiServiceReviews getApiServiseReviews () { return retrofit.create(ApiServiceReviews.class); }
 
 }
