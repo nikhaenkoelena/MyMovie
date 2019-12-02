@@ -16,7 +16,7 @@ import com.example.testingmymovies.pojo.Trailer;
 
 import java.util.List;
 
-import retrofit2.http.DELETE;
+import io.reactivex.Flowable;
 
 @Dao
 @TypeConverters(value = Converter.class)
