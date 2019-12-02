@@ -30,6 +30,7 @@ public class MovieViewModel extends AndroidViewModel {
     public LiveData<List<Movie>> movies;
     public MutableLiveData<Throwable> errors;
 
+    private static final String API_KEY = "978314745d3ce652ac32e226b079bf48";
     public static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
     public static final String SMALL_POSTER_SIZE = "w185";
     public static final String BIG_POSTER_SIZE = "w780";
@@ -90,7 +91,7 @@ public class MovieViewModel extends AndroidViewModel {
         final int pageNumber = page;
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiServise();
-        Disposable disposable = apiService.getMovies(lang, sortBy, MIN_VOTE_COUNT_VALUE, pageNumber)
+        Disposable disposable = apiService.getMovies(API_KEY, lang, sortBy, MIN_VOTE_COUNT_VALUE, pageNumber)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<MovieResult>() {

@@ -37,6 +37,7 @@ public class DetailViewModel extends AndroidViewModel {
     private CompositeDisposable compositeDisposable;
 
     private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
+    private static final String API_KEY = "978314745d3ce652ac32e226b079bf48";
 
 
     public DetailViewModel(@NonNull Application application) {
@@ -133,7 +134,7 @@ public class DetailViewModel extends AndroidViewModel {
     public void loadTrailers (int id, String lang) {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiServiceVideo apiServiceVideo = apiFactory.getApiServiseVideo();
-        Disposable disposable = apiServiceVideo.getTrailers(id, lang)
+        Disposable disposable = apiServiceVideo.getTrailers(id, API_KEY, lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<TrailersResult>() {
@@ -161,7 +162,7 @@ public class DetailViewModel extends AndroidViewModel {
     public void loadReviews (int id, String lang) {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiServiceReviews apiServiceReviews = apiFactory.getApiServiseReviews();
-        Disposable disposable = apiServiceReviews.getReviews(id, lang)
+        Disposable disposable = apiServiceReviews.getReviews(id, API_KEY, lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ReviewsResult>() {
