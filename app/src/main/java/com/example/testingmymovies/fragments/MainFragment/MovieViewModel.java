@@ -1,4 +1,4 @@
-package com.example.testingmymovies.screens.screen_main;
+package com.example.testingmymovies.fragments.MainFragment;
 
 import android.app.Application;
 import android.os.AsyncTask;

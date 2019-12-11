@@ -1,4 +1,4 @@
-package com.example.testingmymovies.screens.screen_favourite;
+package com.example.testingmymovies.fragments.FavouriteFragment;
 
 import android.app.Application;
 import android.os.AsyncTask;

@@ -1,4 +1,4 @@
-package com.example.testingmymovies.fragments;
+package com.example.testingmymovies.fragments.DetailFragment;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -22,12 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.testingmymovies.R;
 import com.example.testingmymovies.adapters.ReviewsAdapter;
 import com.example.testingmymovies.adapters.TrailersAdapter;
+import com.example.testingmymovies.fragments.FavouriteFragment.FavouriteViewModel;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.pojo.Review;
 import com.example.testingmymovies.pojo.Trailer;
-import com.example.testingmymovies.screens.screen_detail.DetailViewModel;
-import com.example.testingmymovies.screens.screen_favourite.FavouriteViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
