@@ -1,4 +1,4 @@
-package com.example.testingmymovies.fragments;
+package com.example.testingmymovies.fragments.MainFragment;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -9,7 +9,6 @@ import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,15 +18,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testingmymovies.R;
 import com.example.testingmymovies.adapters.MovieAdapter;
 import com.example.testingmymovies.pojo.Movie;
-import com.example.testingmymovies.screens.screen_main.MainActivity;
-import com.example.testingmymovies.screens.screen_main.MovieViewModel;
 
 import java.util.List;
 import java.util.Locale;

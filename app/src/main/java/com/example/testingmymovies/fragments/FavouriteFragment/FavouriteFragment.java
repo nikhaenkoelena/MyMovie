@@ -1,6 +1,5 @@
-package com.example.testingmymovies.fragments;
+package com.example.testingmymovies.fragments.FavouriteFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -22,8 +21,6 @@ import com.example.testingmymovies.R;
 import com.example.testingmymovies.adapters.MovieAdapter;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
-import com.example.testingmymovies.screens.screen_favourite.FavouriteViewModel;
-import com.example.testingmymovies.screens.screen_main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
