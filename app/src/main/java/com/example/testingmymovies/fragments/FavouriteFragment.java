@@ -23,6 +23,7 @@ import com.example.testingmymovies.adapters.MovieAdapter;
 import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.screens.screen_favourite.FavouriteViewModel;
+import com.example.testingmymovies.screens.screen_main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class FavouriteFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favourite_fragment, container, false);
+        getActivity().setTitle(R.string.menu_option_favourite);
         return view;
     }
 
