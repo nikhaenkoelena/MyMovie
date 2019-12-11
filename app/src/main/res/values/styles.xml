@@ -18,4 +18,8 @@
         <item name="android:textColor">@color/colorWhiteViolet</item>
     </style>
 
+    <style name="ToolbarColoredBackArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/white_color</item>
+    </style>
+
 </resources>

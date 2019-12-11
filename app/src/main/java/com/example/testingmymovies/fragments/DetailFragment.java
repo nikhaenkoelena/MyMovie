@@ -77,6 +77,7 @@ public class DetailFragment extends Fragment {
         favouriteViewModel = ViewModelProviders.of(this).get(FavouriteViewModel.class);
         id = getArguments().getInt("id");
         movie = detailViewModel.getMovieById(id);
+        getActivity().setTitle(movie.getTitle());
         Picasso.get().load(movie.getPoster_path_big()).placeholder(R.drawable.placeholder).into(imageView);
         textViewTitle.setText(movie.getTitle());
         textViewOriginTitle.setText(movie.getOriginal_title());
