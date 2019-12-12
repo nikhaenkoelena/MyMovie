@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-@Entity(tableName = "trailerstable")
+@Entity(tableName = "trailers_table")
 public class Trailer {
     @PrimaryKey
     @NonNull

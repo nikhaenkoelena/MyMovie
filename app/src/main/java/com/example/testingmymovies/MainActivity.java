@@ -26,22 +26,6 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CompositeDisposable compositeDisposable;
-    private LiveData<List<Movie>> movies;
-    private MovieViewModel viewModel;
-    private RecyclerView recyclerView;
-    private MovieAdapter adapter;
-    private Switch switchSortBy;
-    private TextView popularity;
-    private TextView topRated;
-    private ProgressBar progressBar;
-
-    private static int methodOfSort;
-    private int page;
-    private static String lang;
-
-    private static boolean isLoading;
-
     private NavController navController;
     private Toolbar toolbar;
 
@@ -58,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +49,8 @@ public class MainActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("MyMovie");
+        toolbar.setTitle(R.string.app_title);
         NavigationUI.setupWithNavController(toolbar, navController);
-
     }
 
 }

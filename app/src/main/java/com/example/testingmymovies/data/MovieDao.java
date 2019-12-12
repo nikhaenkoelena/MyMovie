@@ -22,25 +22,25 @@ import io.reactivex.Flowable;
 @TypeConverters(value = Converter.class)
 public interface MovieDao {
 
-    @Query("SELECT * FROM moviestable")
+    @Query("SELECT * FROM movies_table")
     LiveData<List<Movie>> getAllMovies ();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMovies (List<Movie> movies);
 
-    @Query("DELETE FROM moviestable")
+    @Query("DELETE FROM movies_table")
     void deleteAllMovies ();
 
     @Insert
     void insertFavouriteMovie (FavouriteMovie movie);
 
-    @Query("SELECT * FROM favourite_moviestable")
+    @Query("SELECT * FROM favourite_movies_table")
     LiveData<List<FavouriteMovie>> getAllFavouriteMovies ();
 
-    @Query("SELECT * FROM moviestable WHERE id == :movieId")
+    @Query("SELECT * FROM movies_table WHERE id == :movieId")
     Movie getMovieById (int movieId);
 
-    @Query("SELECT * FROM favourite_moviestable WHERE id == :favMovieId")
+    @Query("SELECT * FROM favourite_movies_table WHERE id == :favMovieId")
     FavouriteMovie getFavouriteMovieById (int favMovieId);
 
     @Delete
@@ -49,19 +49,19 @@ public interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertTrailers (List<Trailer> trailers);
 
-    @Query("DELETE FROM trailerstable")
+    @Query("DELETE FROM trailers_table")
     void deleteAllTrailers ();
 
-    @Query("SELECT * FROM trailerstable")
+    @Query("SELECT * FROM trailers_table")
     LiveData<List<Trailer>> getTrailers ();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertReviews (List<Review> reviews);
 
-    @Query("DELETE FROM reviewstable")
+    @Query("DELETE FROM reviews_table")
     void deleteAllReviews ();
 
-    @Query("SELECT * FROM reviewstable")
+    @Query("SELECT * FROM reviews_table")
     LiveData<List<Review>> getReviews ();
 
 }

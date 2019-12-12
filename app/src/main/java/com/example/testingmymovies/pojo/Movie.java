@@ -13,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-@Entity(tableName = "moviestable")
+@Entity(tableName = "movies_table")
 public class Movie {
     @PrimaryKey (autoGenerate = true)
     @SerializedName("uniqId")

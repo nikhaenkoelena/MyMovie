@@ -3,7 +3,7 @@ package com.example.testingmymovies.pojo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
-@Entity(tableName = "favourite_moviestable")
+@Entity(tableName = "favourite_movies_table")
 public class FavouriteMovie extends Movie {
 
 
