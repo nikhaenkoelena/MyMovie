@@ -17,5 +17,5 @@
     <string name="description_icon_videoplayer">Videoplays icon</string>
     <string name="label_trailers">Trailers:</string>
     <string name="label_reviews">Reviews:</string>
-    <string name="app_title">MyMovie</string>
+    <string name="app_title" translatable="false">MyMovie</string>
 </resources>

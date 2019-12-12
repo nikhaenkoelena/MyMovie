@@ -166,12 +166,12 @@ public class MainFragment extends Fragment {
 
     private void setMethodOfSort (boolean isTopRated) {
         if (isTopRated) {
-            popularity.setTextColor(getResources().getColor(R.color.white_color));
+            popularity.setTextColor(getResources().getColor(R.color.whiteColor));
             topRated.setTextColor(getResources().getColor(R.color.colorAccent));
             methodOfSort = 1;
         } else {
             popularity.setTextColor(getResources().getColor(R.color.colorAccent));
-            topRated.setTextColor(getResources().getColor(R.color.white_color));
+            topRated.setTextColor(getResources().getColor(R.color.whiteColor));
             methodOfSort = 0;
         }
         viewModel.loadData(lang, methodOfSort, page);
