@@ -29,7 +29,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
     }
 
     public interface OnTrailerClickListener {
-        void onTrailerClick (String url);
+        void onTrailerClick(String url);
     }
 
     public void setOnTrailerClickListener(OnTrailerClickListener onTrailerClickListener) {

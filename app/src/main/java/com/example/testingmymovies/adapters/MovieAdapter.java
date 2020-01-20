@@ -21,7 +21,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private OnPosterClickListener onPosterClickListener;
     private OnReachEndListener onReachEndListener;
 
-    public MovieAdapter () { movies = new ArrayList<>();
+    public MovieAdapter() {
+        movies = new ArrayList<>();
     }
 
     public MovieAdapter(MovieAdapter.OnPosterClickListener onPosterClickListener) {
@@ -33,7 +34,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public interface OnPosterClickListener {
-        void onPosterClick (int position);
+        void onPosterClick(int position);
     }
 
     public void setOnPosterClickListener(MovieAdapter.OnPosterClickListener onPosterClickListener) {
@@ -50,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public interface OnReachEndListener {
-        void onReachEnd ();
+        void onReachEnd();
     }
 
     public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
@@ -66,11 +67,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        if (movies.size() >= 20 && position > movies.size() - 4 && onReachEndListener != null) {onReachEndListener.onReachEnd();}
+        if (movies.size() >= 20 && position > movies.size() - 4 && onReachEndListener != null) {
+            onReachEndListener.onReachEnd();
+        }
         Movie movie = movies.get(position);
         if (movie.getPoster_path_small() != null && !movie.getPoster_path_small().isEmpty()) {
             Picasso.get().load(movie.getPoster_path_small()).into(holder.poster);
-        } else {Picasso.get().load(R.drawable.avatar).into(holder.poster);}
+        } else {
+            Picasso.get().load(R.drawable.avatar).into(holder.poster);
+        }
     }
 
     @Override

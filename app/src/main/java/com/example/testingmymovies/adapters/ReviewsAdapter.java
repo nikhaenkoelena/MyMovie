@@ -19,7 +19,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
     private List<Review> reviews;
 
     public ReviewsAdapter() {
-        reviews =  new ArrayList<>();
+        reviews = new ArrayList<>();
     }
 
     public void setReviews(List<Review> reviews) {

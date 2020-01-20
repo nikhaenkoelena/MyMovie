@@ -2,6 +2,8 @@ package com.example.testingmymovies.fragments.MainFragment;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -17,9 +19,12 @@ import com.example.testingmymovies.pojo.MovieResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -55,29 +60,87 @@ public class MovieViewModel extends AndroidViewModel {
         return movies;
     }
 
-    public void insertMovies(List<Movie> movies) {
-        new InsertMovieTask().execute(movies);
+//    public void insertMovies(List<Movie> movies) {
+//        new InsertMovieTask().execute(movies);
+//    }
+//
+//    public static class InsertMovieTask extends AsyncTask<List<Movie>, Void, Void> {
+//        @Override
+//        protected Void doInBackground(List<Movie>... lists) {
+//            if (lists != null && lists.length > 0)
+//                database.movieDao().insertMovies(lists[0]);
+//            Log.i("Inserting", "ok");
+//            return null;
+//        }
+//    }
+//
+//    public void deleteAllMovies() {
+//        new DeleteAllMoviesTask().execute();
+//    }
+
+//    public static class DeleteAllMoviesTask extends AsyncTask<Void, Void, Void> {
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            database.movieDao().deleteAllMovies();
+//            Log.i("Deleting", "ok");
+//            return null;
+//        }
+//    }
+
+    private void insertMovies (final List<Movie> movies) {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                if (movies != null && movies.size() > 0) {
+                    database.movieDao().insertMovies(movies);
+                } else {
+                    Log.i("Проверка", "лист равен нулю");
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("Complete inserting posts", "true");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getApplication(), "Error inserting posts" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    public static class InsertMovieTask extends AsyncTask<List<Movie>, Void, Void> {
-        @Override
-        protected Void doInBackground(List<Movie>... lists) {
-            if (lists != null && lists.length > 0)
-                database.movieDao().insertMovies(lists[0]);
-            return null;
-        }
-    }
+    private void deleteAllMovies () {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                database.movieDao().deleteAllMovies();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-    public void deleteAllMovies() {
-        new DeleteAllMoviesTask().execute();
-    }
+                    }
 
-    public static class DeleteAllMoviesTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            database.movieDao().deleteAllMovies();
-            return null;
-        }
+                    @Override
+                    public void onComplete() {
+                        Log.i("Complete deleting posts", "true");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getApplication(), "Error deleting posts" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 

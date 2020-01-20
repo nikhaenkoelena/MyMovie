@@ -2,6 +2,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="@string/menu_option_main" android:id="@+id/mainFragment"/>
     <item android:title="@string/menu_option_favourite" android:id="@+id/favouriteFragment"/>
-
-
 </menu>
