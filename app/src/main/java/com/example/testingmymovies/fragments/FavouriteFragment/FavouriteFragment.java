@@ -2,6 +2,7 @@ package com.example.testingmymovies.fragments.FavouriteFragment;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,20 @@ import com.example.testingmymovies.pojo.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class FavouriteFragment extends Fragment {
 
-    private RecyclerView recyclerView;
+    @BindView(R.id.recyclerViewFavouriteMovies) RecyclerView recyclerView;
     private MovieAdapter adapter;
     private FavouriteViewModel viewModel;
-    NavController navController;
+    private NavController navController;
+
+    private Unbinder unbinder;
 
     private static final int WIDTHOFPOSTER = 185;
 
@@ -38,7 +46,8 @@ public class FavouriteFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favourite_fragment, container, false);
-        getActivity().setTitle(R.string.menu_option_favourite);
+        unbinder = ButterKnife.bind(this, view);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.menu_option_favourite);
         return view;
     }
 
@@ -46,11 +55,23 @@ public class FavouriteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        recyclerView = view.findViewById(R.id.recyclerViewFavouriteMovies);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getColumCount()));
         adapter = new MovieAdapter();
         recyclerView.setAdapter(adapter);
         viewModel = ViewModelProviders.of(this).get(FavouriteViewModel.class);
+        setOnPosterClickListener();
+        getFavouriteMovie();
+
+    }
+
+    private int getColumCount () {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = (int) (displayMetrics.widthPixels / displayMetrics.density);
+        return width / WIDTHOFPOSTER > 2 ? width / WIDTHOFPOSTER : 2;
+    }
+
+    private void getFavouriteMovie() {
         final LiveData<List<FavouriteMovie>> favouritemovies = viewModel.getFavouriteMovies();
         favouritemovies.observe(this, new Observer<List<FavouriteMovie>>() {
             @Override
@@ -62,6 +83,9 @@ public class FavouriteFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void setOnPosterClickListener() {
         adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
@@ -73,10 +97,9 @@ public class FavouriteFragment extends Fragment {
         });
     }
 
-    private int getColumCount () {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels / displayMetrics.density);
-        return width / WIDTHOFPOSTER > 2 ? width / WIDTHOFPOSTER : 2;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

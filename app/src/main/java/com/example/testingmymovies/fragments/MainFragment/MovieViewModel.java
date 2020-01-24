@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.testingmymovies.R;
 import com.example.testingmymovies.api.ApiFactory;
 import com.example.testingmymovies.api.ApiService;
 import com.example.testingmymovies.data.MovieDatabase;
@@ -61,31 +62,29 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     private void deleteAllMovies () {
-        Completable.fromAction(new Action() {
+        compositeDisposable.add(Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
                     database.movieDao().deleteMoviesTransaction();
-                    Log.i("Complete deleting", "ok");
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe());
     }
 
     private void insertMovies (final List<Movie> movies) {
-        Completable.fromAction(new Action() {
+        compositeDisposable.add(Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
                 if (movies != null && movies.size() > 0) {
                     database.movieDao().insertMovies(movies);
-                    Log.i("Complete inserting", "ok");
                 } else {
-                    Toast.makeText(getApplication(), "movies are empty or equals null", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), R.string.error_no_movies, Toast.LENGTH_SHORT).show();
                 }
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe());
     }
 
 

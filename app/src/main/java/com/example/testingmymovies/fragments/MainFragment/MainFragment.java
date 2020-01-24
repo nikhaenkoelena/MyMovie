@@ -27,22 +27,25 @@ import com.example.testingmymovies.pojo.Movie;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
 
 
 public class MainFragment extends Fragment {
 
-    NavController navController = null;
-    private CompositeDisposable compositeDisposable;
+    @BindView(R.id.recyclerViewMovies) RecyclerView recyclerView;
+    @BindView(R.id.switch1) Switch switchSortBy;
+    @BindView(R.id.textViewPopularity) TextView popularity;
+    @BindView(R.id.textViewVoted) TextView topRated;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
+    private NavController navController = null;
     private LiveData<List<Movie>> movies;
     private MovieViewModel viewModel;
-    private RecyclerView recyclerView;
     private MovieAdapter adapter;
-    private Switch switchSortBy;
-    private TextView popularity;
-    private TextView topRated;
-    private ProgressBar progressBar;
 
     private static int methodOfSort;
     private int page;
@@ -51,11 +54,14 @@ public class MainFragment extends Fragment {
     private static boolean isLoading;
     private static final int WIDTHOFPOSTER = 185;
 
+    private Unbinder unbinder;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
-        getActivity().setTitle(R.string.app_title);
+        unbinder = ButterKnife.bind(this, view);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.app_title);
         return view;
     }
 
@@ -63,18 +69,13 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        recyclerView = view.findViewById(R.id.recyclerViewMovies);
-        switchSortBy = view.findViewById(R.id.switch1);
         switchSortBy.setChecked(false);
         methodOfSort = 0;
         page = 1;
         isLoading = false;
         lang = Locale.getDefault().getLanguage();
-        popularity = view.findViewById(R.id.textViewPopularity);
-        topRated = view.findViewById(R.id.textViewVoted);
         setOnClickListenerPopularity();
         setOnClickListenerTopRated();
-        progressBar = view.findViewById(R.id.progressBar);
         popularity.setTextColor(getResources().getColor(R.color.colorAccent));
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), getColumCount()));
         adapter = new MovieAdapter();
@@ -175,5 +176,11 @@ public class MainFragment extends Fragment {
             methodOfSort = 0;
         }
         viewModel.loadData(lang, methodOfSort, page);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

@@ -18,4 +18,5 @@
     <string name="label_trailers">Trailers:</string>
     <string name="label_reviews">Reviews:</string>
     <string name="app_title" translatable="false">MyMovie</string>
+    <string name="error_no_movies">Unfortunately there are no movies</string>
 </resources>

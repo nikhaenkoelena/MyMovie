@@ -3,6 +3,7 @@ package com.example.testingmymovies.fragments.DetailFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,65 +32,61 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class DetailFragment extends Fragment {
 
-    private ImageView imageView;
-    private TextView textViewTitle;
-    private TextView textViewOriginTitle;
-    private TextView textViewReleaseDate;
-    private TextView textViewOverview;
+    @BindView(R.id.imageViewBigPoster) ImageView imageView;
+    @BindView(R.id.textViewTitle) TextView textViewTitle;
+    @BindView(R.id.textViewOriginTitle) TextView textViewOriginTitle;
+    @BindView(R.id.textViewReleaseDate) TextView textViewReleaseDate;
+    @BindView(R.id.textViewOverView) TextView textViewOverview;
+    @BindView(R.id.imageViewAddToFavourite) ImageView imageViewAddToFavourite;
+    @BindView(R.id.textViewLabelTrailers) TextView textViewLabelTrailers;
+    @BindView(R.id.textViewLabelReviews) TextView textViewLabelReviews;
+
     private DetailViewModel detailViewModel;
     private FavouriteViewModel favouriteViewModel;
-    private ImageView imageViewAddToFavourite;
+
     private int id;
     private Movie movie;
     private FavouriteMovie favouriteMovie;
     private String lang;
 
-    private TextView textViewLabelTrailers;
-    private TextView textViewLabelReviews;
-
-    private RecyclerView recyclerViewTrailers;
-    private RecyclerView recyclerViewReviews;
+    @BindView(R.id.recyclerViewTrailers) RecyclerView recyclerViewTrailers;
+    @BindView(R.id.recyclerViewReviews) RecyclerView recyclerViewReviews;
     private TrailersAdapter trailersAdapter;
     private ReviewsAdapter reviewsAdapter;
 
     private LiveData<List<Trailer>> trailers;
     private LiveData<List<Review>> reviews;
 
+    private Unbinder unbinder;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detail_fragment, container, false);
-        imageView = view.findViewById(R.id.imageViewBigPoster);
-        textViewTitle = view.findViewById(R.id.textViewTitle);
-        textViewOriginTitle = view.findViewById(R.id.textViewOriginTitle);
-        textViewReleaseDate = view.findViewById(R.id.textViewReleaseDate);
-        textViewOverview = view.findViewById(R.id.textViewOverView);
-        imageViewAddToFavourite = view.findViewById(R.id.imageViewAddToFavourite);
-        textViewLabelTrailers = view.findViewById(R.id.textViewLabelTrailers);
-        textViewLabelReviews = view.findViewById(R.id.textViewLabelReviews);
+        unbinder = ButterKnife.bind(this, view);
         lang = Locale.getDefault().getLanguage();
-        setOnClicListenerkAddToFavourite();
+        setOnClickListenerAddToFavourite();
         detailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
         favouriteViewModel = ViewModelProviders.of(this).get(FavouriteViewModel.class);
-        id = getArguments().getInt("id");
+        if (getArguments() != null) {
+            id = getArguments().getInt("id");
+        }
         movie = detailViewModel.getMovieById(id);
-        getActivity().setTitle(movie.getTitle());
+        Objects.requireNonNull(getActivity()).setTitle(movie.getTitle());
         Picasso.get().load(movie.getPoster_path_big()).placeholder(R.drawable.placeholder).into(imageView);
         textViewTitle.setText(movie.getTitle());
         textViewOriginTitle.setText(movie.getOriginal_title());
         textViewReleaseDate.setText(movie.getRelease_date());
         textViewOverview.setText(movie.getOverview());
-//        } else {
-//            Toast.makeText(this, R.string.loading_error, Toast.LENGTH_SHORT).show();
-//            Intent intent1 = new Intent(getApplicationContext(), MainActivity.class);
-//            startActivity(intent1);
-//        }
         setFavourite();
-        recyclerViewTrailers = view.findViewById(R.id.recyclerViewTrailers);
-        recyclerViewReviews = view.findViewById(R.id.recyclerViewReviews);
         trailersAdapter =  new TrailersAdapter();
         reviewsAdapter = new ReviewsAdapter();
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -99,6 +96,26 @@ public class DetailFragment extends Fragment {
         detailViewModel.deleteAllTrailers();
         detailViewModel.deleteAllReviews();
         detailViewModel.loadTrailers(id, lang);
+        getTrailers();
+        setOnClickListenerTrailers();
+        detailViewModel.loadTrailers(id, lang);
+        getReviews();
+        detailViewModel.loadReviews(id, lang);
+        getErrors();
+        return view;
+    }
+
+    private void setOnClickListenerTrailers () {
+        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
+            @Override
+            public void onTrailerClick(String url) {
+                Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intentToTrailer);
+            }
+        });
+    }
+
+    private void getTrailers () {
         trailers = detailViewModel.getTrailers();
         trailers.observe(this, new Observer<List<Trailer>>() {
             @Override
@@ -109,14 +126,9 @@ public class DetailFragment extends Fragment {
                 } else {textViewLabelTrailers.setVisibility(View.VISIBLE);}
             }
         });
-        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
-            @Override
-            public void onTrailerClick(String url) {
-                Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intentToTrailer);
-            }
-        });
-        detailViewModel.loadTrailers(id, lang);
+    }
+
+    private void getReviews() {
         reviews = detailViewModel.getReviews();
         reviews.observe(this, new Observer<List<Review>>() {
             @Override
@@ -127,7 +139,9 @@ public class DetailFragment extends Fragment {
                 } else {textViewLabelReviews.setVisibility(View.VISIBLE);}
             }
         });
-        detailViewModel.loadReviews(id, lang);
+    }
+
+    private void getErrors() {
         detailViewModel.getErrors().observe(this, new Observer<Throwable>() {
             @Override
             public void onChanged(Throwable throwable) {
@@ -137,10 +151,9 @@ public class DetailFragment extends Fragment {
                 }
             }
         });
-        return view;
     }
 
-    public void setOnClicListenerkAddToFavourite() {
+    private void setOnClickListenerAddToFavourite() {
         imageViewAddToFavourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,4 +178,9 @@ public class DetailFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
 }
