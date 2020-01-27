@@ -18,56 +18,72 @@ import com.example.testingmymovies.pojo.Trailer;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 @Dao
 @TypeConverters(value = Converter.class)
 public abstract class MovieDao {
 
     @Transaction
-    public void deleteMoviesTransaction () {
+    public void deleteMoviesTransaction() {
         deleteAllMovies();
     }
 
+    @Transaction
+    public void deleteTrailersTransaction() {
+        deleteAllTrailers();
+    }
+
+    @Transaction
+    public void deleteReviewsTransaction() {
+        deleteAllReviews();
+    }
+
+    @Transaction
+    public Single<FavouriteMovie> getFavouriteMovieByIdTransaction (int id) {
+        return getFavouriteMovieById(id);
+    }
+
     @Query("SELECT * FROM movies_table")
-    public abstract LiveData<List<Movie>> getAllMovies ();
+    public abstract LiveData<List<Movie>> getAllMovies();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertMovies (List<Movie> movies);
+    public abstract void insertMovies(List<Movie> movies);
 
     @Query("DELETE FROM movies_table")
-    public abstract void deleteAllMovies ();
+    public abstract void deleteAllMovies();
 
     @Insert
-    public abstract void insertFavouriteMovie (FavouriteMovie movie);
+    public abstract void insertFavouriteMovie(FavouriteMovie movie);
 
     @Query("SELECT * FROM favourite_movies_table")
-    public abstract LiveData<List<FavouriteMovie>> getAllFavouriteMovies ();
+    public abstract LiveData<List<FavouriteMovie>> getAllFavouriteMovies();
 
     @Query("SELECT * FROM movies_table WHERE id == :movieId")
-    public abstract Movie getMovieById (int movieId);
+    public abstract Single<Movie> getMovieById(int movieId);
 
     @Query("SELECT * FROM favourite_movies_table WHERE id == :favMovieId")
-    public abstract FavouriteMovie getFavouriteMovieById (int favMovieId);
+    public abstract Single<FavouriteMovie> getFavouriteMovieById(int favMovieId);
 
     @Delete
-    public abstract void deleteFavouriteMovie (FavouriteMovie favouriteMovie);
+    public abstract void deleteFavouriteMovie(FavouriteMovie favouriteMovie);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertTrailers (List<Trailer> trailers);
+    public abstract void insertTrailers(List<Trailer> trailers);
 
     @Query("DELETE FROM trailers_table")
-    public abstract void deleteAllTrailers ();
+    public abstract void deleteAllTrailers();
 
     @Query("SELECT * FROM trailers_table")
-    public abstract LiveData<List<Trailer>> getTrailers ();
+    public abstract LiveData<List<Trailer>> getTrailers();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract void insertReviews (List<Review> reviews);
+    public abstract void insertReviews(List<Review> reviews);
 
     @Query("DELETE FROM reviews_table")
-    public abstract void deleteAllReviews ();
+    public abstract void deleteAllReviews();
 
     @Query("SELECT * FROM reviews_table")
-    public abstract LiveData<List<Review>> getReviews ();
+    public abstract LiveData<List<Review>> getReviews();
 
 }

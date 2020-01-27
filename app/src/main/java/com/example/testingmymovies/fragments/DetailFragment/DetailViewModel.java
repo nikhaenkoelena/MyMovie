@@ -2,6 +2,8 @@ package com.example.testingmymovies.fragments.DetailFragment;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -12,6 +14,7 @@ import com.example.testingmymovies.api.ApiFactory;
 import com.example.testingmymovies.api.ApiServiceReviews;
 import com.example.testingmymovies.api.ApiServiceVideo;
 import com.example.testingmymovies.data.MovieDatabase;
+import com.example.testingmymovies.pojo.FavouriteMovie;
 import com.example.testingmymovies.pojo.Movie;
 import com.example.testingmymovies.pojo.Review;
 import com.example.testingmymovies.pojo.ReviewsResult;
@@ -22,23 +25,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class DetailViewModel extends AndroidViewModel {
 
     private static MovieDatabase database;
-    public LiveData<List<Trailer>> trailers;
-    public LiveData<List<Review>> reviews;
-    public MutableLiveData<Throwable> errors;
+    private LiveData<List<Trailer>> trailers;
+    private LiveData<List<Review>> reviews;
+    private MutableLiveData<Movie> movieFromDb;
+    private MutableLiveData<FavouriteMovie> favouriteMovieFromDb;
+    private MutableLiveData<Throwable> errors;
     private CompositeDisposable compositeDisposable;
 
     private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
     private static final String API_KEY = "978314745d3ce652ac32e226b079bf48";
-
+    private static final FavouriteMovie favouriteMovieNull = new FavouriteMovie(0, 0, 0, 0, null, null, null, null, null, null, null);
 
     public DetailViewModel(@NonNull Application application) {
         super(application);
@@ -46,6 +54,8 @@ public class DetailViewModel extends AndroidViewModel {
         trailers = database.movieDao().getTrailers();
         reviews = database.movieDao().getReviews();
         errors = new MutableLiveData<>();
+        movieFromDb = new MutableLiveData<>();
+        favouriteMovieFromDb = new MutableLiveData<>();
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -53,85 +63,103 @@ public class DetailViewModel extends AndroidViewModel {
         return errors;
     }
 
-    public LiveData<List<Review>> getReviews () {return reviews; }
-
-    public LiveData<List<Trailer>> getTrailers () { return trailers; }
-
-    public void insertTrailers (List<Trailer> trailers) {
-        new InsertTrailersTask().execute(trailers);
+    public LiveData<List<Review>> getReviews() {
+        return reviews;
     }
 
-    public static class InsertTrailersTask extends AsyncTask<List<Trailer>, Void, Void> {
-        @Override
-        protected Void doInBackground(List<Trailer>... lists) {
-            if(lists != null && lists.length >0) {
-                database.movieDao().insertTrailers(lists[0]);
+    public LiveData<List<Trailer>> getTrailers() {
+        return trailers;
+    }
+
+    public MutableLiveData<Movie> getMovieFromDb() {
+        return movieFromDb;
+    }
+
+    public MutableLiveData<FavouriteMovie> getFavouriteMovieFromDb() {
+        return favouriteMovieFromDb;
+    }
+
+    public void loadFavouriteMovieById(int id) {
+        Log.i("CheckId", Integer.toString(id));
+        compositeDisposable.add(database.movieDao().getFavouriteMovieByIdTransaction(id)
+        .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<FavouriteMovie>() {
+                    @Override
+                    public void accept(FavouriteMovie favouriteMovie) throws Exception {
+                        favouriteMovieFromDb.setValue(favouriteMovie);
+                        Log.i("CheckFavMov", favouriteMovie.getTitle());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        favouriteMovieFromDb.setValue(null);
+                        Log.i("CkeckLoadError", throwable.getMessage());
+                    }
+                }));
+    }
+
+    public void insertTrailers(final List<Trailer> trailers) {
+        compositeDisposable.add(Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                if (trailers != null && trailers.size() > 0) {
+                    database.movieDao().insertTrailers(trailers);
+                }
             }
-            return null;
-        }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
     }
 
-    public void deleteAllTrailers () {
-        new DeleteAllTrailersTask().execute();
-    }
-
-    public static class DeleteAllTrailersTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            database.movieDao().deleteAllTrailers();
-            return null;
-        }
-    }
-
-    public void deleteAllReviews () {
-        new DeleteAllReviesTask().execute();
-    }
-
-    public static class DeleteAllReviesTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            database.movieDao().deleteAllReviews();
-            return null;
-        }
-    }
-
-    public void insertReviews (List<Review> reviews) {
-        new InsertReviewsTask().execute(reviews);
-    }
-
-    public static class InsertReviewsTask extends AsyncTask<List<Review>, Void, Void> {
-        @Override
-        protected Void doInBackground(List<Review>... lists) {
-            if (lists != null && lists.length > 0) {
-                database.movieDao().insertReviews(lists[0]);
+    public void deleteAllTrailers() {
+        compositeDisposable.add(Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                database.movieDao().deleteTrailersTransaction();
             }
-            return null;
-        }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
     }
 
-    public Movie getMovieById(int id) {
-        try {
-            return new GetMovieByIdTask().execute(id).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static class GetMovieByIdTask extends AsyncTask<Integer, Void, Movie> {
-
-        @Override
-        protected Movie doInBackground(Integer... integers) {
-            if (integers != null && integers.length > 0) {
-                return database.movieDao().getMovieById(integers[0]);
+    public void deleteAllReviews() {
+        compositeDisposable.add(Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                database.movieDao().deleteReviewsTransaction();
             }
-            return null;
-        }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
     }
 
-    public void loadTrailers (int id, String lang) {
+    public void insertReviews(final List<Review> reviews) {
+        compositeDisposable.add(Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                if (reviews != null && reviews.size() > 0) {
+                    database.movieDao().insertReviews(reviews);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
+    }
+
+    public void loadMovieById(int id) {
+        compositeDisposable.add(database.movieDao().getMovieById(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Movie>() {
+                    @Override
+                    public void accept(Movie movie) throws Exception {
+                        movieFromDb.setValue(movie);
+                    }
+                }));
+    }
+
+    public void loadTrailers(int id, String lang) {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiServiceVideo apiServiceVideo = apiFactory.getApiServiseVideo();
         Disposable disposable = apiServiceVideo.getTrailers(id, API_KEY, lang)
@@ -159,7 +187,7 @@ public class DetailViewModel extends AndroidViewModel {
         compositeDisposable.add(disposable);
     }
 
-    public void loadReviews (int id, String lang) {
+    public void loadReviews(int id, String lang) {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiServiceReviews apiServiceReviews = apiFactory.getApiServiseReviews();
         Disposable disposable = apiServiceReviews.getReviews(id, API_KEY, lang)
@@ -181,7 +209,7 @@ public class DetailViewModel extends AndroidViewModel {
         compositeDisposable.add(disposable);
     }
 
-    public void clearError () {
+    public void clearError() {
         errors.setValue(null);
     }
 
