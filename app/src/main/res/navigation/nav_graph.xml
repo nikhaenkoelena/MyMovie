@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.testingmymovies.fragments.MainFragment.MainFragment"
+        android:name="com.example.testingmymovies.ui.fragments.MainFragment"
         android:label="main_fragment"
         tools:layout="@layout/main_fragment" >
 
@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/favouriteFragment"
-        android:name="com.example.testingmymovies.fragments.FavouriteFragment.FavouriteFragment"
+        android:name="com.example.testingmymovies.ui.fragments.FavouriteFragment"
         android:label="favourite_fragment"
         tools:layout="@layout/favourite_fragment" >
 
@@ -45,7 +45,7 @@
 
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.testingmymovies.fragments.DetailFragment.DetailFragment"
+        android:name="com.example.testingmymovies.ui.fragments.DetailFragment"
         android:label="detail_fragment"
         tools:layout="@layout/detail_fragment" />
 </navigation>
